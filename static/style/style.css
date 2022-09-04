@@ -1,0 +1,48 @@
+#main {
+  text-align: center;
+}
+#main p {
+  width: 70%;
+  text-align: center;
+  margin: 0 auto;
+}
+#main box{
+  padding: 0.5 10;
+  margin-right: 5px;
+}
+.red{
+  background-color: red;
+}
+.green{
+  background-color: green;
+}
+.blue{
+  background-color: blue;
+}
+.label{
+  justify-content: center;
+}
+.label div{
+  margin: 0 10px;
+}
+img {
+  width: 100%;
+}
+#highlight{
+  text-align: center;
+}
+#highlight ul li{
+  list-style: none;
+}
+#highlight ul li p{
+  font-size: x-large;
+}
+.twitter-tweet, .twitter-tweet-rendered{
+  margin: 5 auto 50 auto;
+}
+.img{
+  margin: 100px;
+}
+.label{
+  display: flex;
+}
