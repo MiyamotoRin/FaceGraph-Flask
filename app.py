@@ -6,15 +6,14 @@ import os
 # ファイル名をチェックする関数
 from werkzeug.utils import secure_filename
 import numpy as np
+import makefacegraph
 app = Flask(__name__,  static_folder="static")  
 style = "/static/style/style.css"
 # 画像のアップロード先のディレクトリ
-#とりあえずカレント，
-UPLOAD_FOLDER = "."
+UPLOAD_FOLDER = "static/assets/uploads/"
+RESHAPED_FOLDER = "static/assets/reshaped/"
 # アップロードされる拡張子の制限
 ALLOWED_EXTENSIONS = set(['png', 'jpg', 'csv'])
-
-app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 def allwed_file(filename):
     # .があるかどうかのチェックと、拡張子の確認
@@ -46,9 +45,11 @@ def uploads_file():
             # 危険な文字を削除（サニタイズ処理）
             filename = secure_filename(file.filename)
             # ファイルの保存
-            file.save(filename)
+            file.save("./static/assets/uploads/" + filename)
             # アップロード後のページに転送
-            return redirect(url_for('uploaded_file', filename=filename))
+            fn = UPLOAD_FOLDER + filename
+            filenames = makefacegraph.face_reshape(fn,"/static/assets/default.csv")
+            return render_template('result.html', parent_path = RESHAPED_FOLDER, filenames = filenames)
     return '''
     <!doctype html>
     <html>
@@ -69,9 +70,9 @@ def uploads_file():
         </body>
 '''
 
-@app.route('/uploads/<filename>')
+@app.route('/result')
 # ファイルを表示する
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
-if __name__ == "__main__":  
-  app.run(debug=False, host='0.0.0.0', port=11000)
+def uploaded_file(filenames):
+    return render_template('result.html',parent_path = RESHAPED_FOLDER, filenames = filenames)
+if __name__ == "__main__":
+    app.run(debug=False, host='0.0.0.0', port=11000)
