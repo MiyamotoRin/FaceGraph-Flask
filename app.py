@@ -6,7 +6,7 @@ import os
 # ファイル名をチェックする関数
 from werkzeug.utils import secure_filename
 import numpy as np
-import makefacegraph
+import controllers.makefacegraph as makefacegraph
 app = Flask(__name__,  static_folder="static")  
 style = "/static/style/style.css"
 # 画像のアップロード先のディレクトリ

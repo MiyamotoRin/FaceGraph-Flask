@@ -9,7 +9,7 @@ import sys
 import base64
 import json
 #csvを読み込む
-import deal_csv
+import controllers.deal_csv as deal_csv
 
 def distorter(img, x_volume, y_volume):
     (h, w, c) = img.shape
