@@ -13,6 +13,7 @@ import deal_csv
 
 def distorter(img, x_volume, y_volume):
     (h, w, c) = img.shape
+    print("distorter.img shape"+str(img.shape))
     right_edge = w
     left_edge = 0
     top_edge = 0
@@ -26,7 +27,7 @@ def distorter(img, x_volume, y_volume):
             flex_x[y,x] = x + math.sin(x/30) * x_volume
             flex_y[y,x] = y + math.cos(y/30) * y_volume
     dst = cv2.remap(img,flex_x,flex_y,cv2.INTER_LINEAR)
-    dst = cv2.cvtColor(dst , cv2.COLOR_BGR2RGB)
+    dst = cv2.cvtColor(dst , cv2.COLOR_BGRA2RGBA)
     return dst
 def convert_deg(p1, p2):
   # 二点間の座標の差をとって傾きの角度を求める
@@ -39,10 +40,11 @@ def convert_deg(p1, p2):
 
 #欲しい領域のみ回転させる。切り出しと回転が同時なイメージ。
 def rot_cut(src_img, deg, center, size):
+    src_img_a = cv2.cvtColor(src_img, cv2.COLOR_RGB2RGBA)
     rot_mat = cv2.getRotationMatrix2D(center, deg, 1.0)
     rot_mat[0][2] += -center[0]+size[0]/2 # -(元画像内での中心位置)+(切り抜きたいサイズの中心)
     rot_mat[1][2] += -center[1]+size[1]/2 # 同上
-    return cv2.warpAffine(src_img, rot_mat, size)
+    return cv2.warpAffine(src_img_a, rot_mat, size,borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 255, 0))
 
 class ClassifyPolymesh:
   def __init__(self, pu, pr, pb, pl, w, h):
@@ -104,7 +106,7 @@ def merge_image(new_img,dst,rev_shape,body_parts):
         for x in range (-int(rev_shape[1]/2), +int(rev_shape[1]/2)):
             #(0,0,0)のときは何もしない
             # try:
-            if np.all(dst[y+int(rev_shape[0]/2)][x+int(rev_shape[1]/2)] != (0,0,0)):
+            if not (np.all( dst[y+int(rev_shape[0]/2)][x+int(rev_shape[1]/2) ][3] < 255 )) :
               new_img[y+arr_center_int[1]][x+arr_center_int[0]] = dst[y+int(rev_shape[0]/2)][x+int(rev_shape[1]/2)]  
             # except Exception as e:
             #   print("err")
@@ -117,6 +119,7 @@ def face_reshape(img_path, csv_path):
   #data = sys.argv
   #"src/assets/shaun.jpg"
   img = cv2.imread(img_path)
+  img = cv2.cvtColor(img, cv2.COLOR_BGR2BGRA)
   (h, w, c) = img.shape
   err_msgs=[]
 
@@ -149,6 +152,7 @@ def face_reshape(img_path, csv_path):
   cnt = 0
 
   imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+  #RGB３ちゃんねるじゃないとだめ
   results = faceMesh.process((imgRGB))
   if results.multi_face_landmarks:
     for faceLms in results.multi_face_landmarks:
