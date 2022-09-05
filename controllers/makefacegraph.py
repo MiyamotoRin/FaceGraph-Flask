@@ -166,13 +166,20 @@ def face_reshape(img_path, csv_path):
           mouse.store(lm, cnt)      
         cnt +=1
 
-  deg_right = math.degrees(convert_deg(right_eye.array[1], right_eye.array[3]))          
-  cutimg_right = rot_cut(imgRGB, deg_right, right_eye.array_center(), right_eye.array_size())
-  deg_left = -math.degrees(convert_deg(left_eye.array[1], left_eye.array[3]))
-  cutimg_left = rot_cut(imgRGB, deg_left, left_eye.array_center(), left_eye.array_size())
+  deg_right = math.degrees(convert_deg(right_eye.array[1], right_eye.array[3]))
+  if deg_right > 0:
+    deg_right = -deg_right
+  deg_left = math.degrees(convert_deg(left_eye.array[1], left_eye.array[3]))
+  if deg_left > 0:
+    deg_left = -deg_left
   deg_nose = math.degrees(convert_deg(nose.array[1], nose.array[3]))
-  cutimg_nose = rot_cut(imgRGB, deg_nose, nose.array_center(), nose.array_size())
+  if deg_nose > 0:
+    deg_nose = -deg_nose
   deg_mouse = math.degrees(convert_deg(mouse.array[1], mouse.array[3]))
+
+  cutimg_right = rot_cut(imgRGB, deg_right, right_eye.array_center(), right_eye.array_size())
+  cutimg_left = rot_cut(imgRGB, deg_left, left_eye.array_center(), left_eye.array_size())
+  cutimg_nose = rot_cut(imgRGB, deg_nose, nose.array_center(), nose.array_size())
   cutimg_mouse = rot_cut(imgRGB, deg_mouse, mouse.array_center(), mouse.array_size())
   #矩形を切り出す，パーツごとの画像arrを生成
   parts_img=[cutimg_right, cutimg_left, cutimg_nose, cutimg_mouse]
