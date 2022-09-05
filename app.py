@@ -31,46 +31,73 @@ def uploads_file():
     # リクエストがポストかどうかの判別
     if request.method == 'POST':
         # ファイルがなかった場合の処理
-        if 'file' not in request.files:
-            print('ファイルがありません')
+        print(request.files)
+        if 'file_img' not in request.files:
+            print('画像ファイルがありません')
+            return redirect(request.url)
+        if 'file_csv' not in request.files:
+            print('CSVファイルがありません')
             return redirect(request.url)
         # データの取り出し
-        file = request.files['file']
+        file_img = request.files['file_img']
+        file_csv =request.files['file_csv']
         # ファイル名がなかった時の処理
-        if file.filename == '':
-            print('ファイルがありません')
+        if file_img.filename == '':
+            print('画像ファイルがありません')
+            er_ms="画像ファイルがありません"
             return redirect(request.url)
-        # ファイルのチェック
-        if file and allwed_file(file.filename):
+        if file_csv.filename == '':
+            print('CSVファイルがありません')
+            return redirect(request.url)
+        # ファイルのチェック(画像)
+        if file_img and allwed_file(file_img.filename):
             # 危険な文字を削除（サニタイズ処理）
-            filename = secure_filename(file.filename)
+            filename_img = secure_filename(file_img.filename)
             # ファイルの保存
-            file.save("./static/assets/uploads/" + filename)
+            file_img.save("./static/assets/uploads/" + filename_img)
             # アップロード後のページに転送
-            fn = UPLOAD_FOLDER + filename
-            filenames = makefacegraph.face_reshape(fn,"/static/assets/default.csv")
-            return render_template('result.html', parent_path = RESHAPED_FOLDER, filenames = filenames)
-    return '''
-<!doctype html>
-    <html>
-        <head>
-            <meta charset="UTF-8">
-            <title>
-                ファイルをアップロードして判定しよう
-            </title>
-        </head>
-        <body>
-            <h1>
-                ファイルをアップロードして判定しよう
-            </h1>
-            <form method = post enctype = multipart/form-data>
-            <p><input type=file name = file>
-            <input type = submit value = Upload>
-            </form>
-        </body>
-        </html>
-    
-    '''
+            fn_img = UPLOAD_FOLDER + filename_img
+
+            # ファイルのチェック(CSVファイル)
+            if file_csv and allwed_file(file_csv.filename):
+                # 危険な文字を削除（サニタイズ処理）
+                filename_csv = secure_filename(file_csv.filename)
+                # ファイルの保存
+                file_csv.save("./static/assets/uploads/" + filename_csv)
+                # アップロード後のページに転送
+                fn_csv = UPLOAD_FOLDER + filename_csv
+                filenames = makefacegraph.face_reshape(fn_img,fn_csv)
+                return render_template('result.html', parent_path = RESHAPED_FOLDER, filenames = filenames)
+    return render_template('index.html')
+
+# @app.route('/failed')
+# def failed():
+#     return '''
+#     <!DOCTYPE html>
+# <html>
+
+# <head>
+#     <meta charset="utf-8">
+#     <meta name="viewport" content="width=device-width,initial-scale=1.0">
+#     <title>失敗</title>
+# </head>
+
+# <body>
+#     <div class="title">
+#         Face Graph
+#     </div>
+#     <div class="desc">
+        
+#     </div>
+#     <div class="next">
+#         <form action="/upload" method="get">
+#             <input type="submit" value='加工する'>
+#         </form>
+#     </div>
+# </body>
+
+# </html>
+#     '''
 
 @app.route('/result')
 # ファイルを表示する
