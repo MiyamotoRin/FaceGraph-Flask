@@ -11,7 +11,7 @@
   <div class="title">FaceGraph</div>
   <form action="/upload" method="post" enctype="multipart/form-data">
     <div class="right">ここに画像ボタン。アップロードでプレビュー表示
-      <input type="file" name='file' accept='image/*' onchange="previewImage(this);">
+      <input type="file" name='file_img' accept='image/*' onchange="previewImage(this);">
       <p>
         Preview:<br>
         <img id="preview" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
@@ -20,7 +20,7 @@
     </div>
 
     <div class="left">ここにCSVファイルボタン。アップロードで名前表示?
-      <input type="file" name="csv_file" accept='.csv'>
+      <input type="file" name="file_csv" accept='.csv'>
     </div>
     <div class="send_data">
       <input type="submit" value="加工する" name="sending">
