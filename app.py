@@ -24,7 +24,7 @@ def allwed_file(filename):
 @app.route("/")  
 def index():
   img_path="/static/assets/shaun.jpg"
-  return render_template('index.html', img_path = img_path,style=style)
+  return render_template('home.html', img_path = img_path,style=style)
 
 @app.route("/upload", methods=['GET', 'POST']) 
 def uploads_file():
@@ -51,7 +51,7 @@ def uploads_file():
             filenames = makefacegraph.face_reshape(fn,"/static/assets/default.csv")
             return render_template('result.html', parent_path = RESHAPED_FOLDER, filenames = filenames)
     return '''
-    <!doctype html>
+<!doctype html>
     <html>
         <head>
             <meta charset="UTF-8">
@@ -68,7 +68,9 @@ def uploads_file():
             <input type = submit value = Upload>
             </form>
         </body>
-'''
+        </html>
+    
+    '''
 
 @app.route('/result')
 # ファイルを表示する

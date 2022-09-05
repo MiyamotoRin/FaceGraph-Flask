@@ -30,14 +30,13 @@
   <div class="resultAll">
     ここはスクロールバー形式で加工画像を全て表示
     buriburiburiburirburbibrubrirburibriururbi
-  <!--{% for filename in filenames %}!-->
+  {% for filename in filenames %}
   <li>
-    <img src="C:\Users\takamatsu\デスクトップ\FaceGraph-Flask\static\assets\rin.jpg">
+    <div>
+      <img src={{parent_path+filename}} alt="">
+    </div>
   </li>
-  <li>
-    <img src="C:\Users\takamatsu\デスクトップ\FaceGraph-Flask\static\assets\rin.jpg">
-  </li>
-  <!--{% endfor %} !-->
+  {% endfor %} !
 </div>
 
 </body>
