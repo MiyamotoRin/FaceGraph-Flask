@@ -9,7 +9,7 @@ import sys
 import base64
 import json
 #csvを読み込む
-import deal_csv
+import controllers.deal_csv as deal_csv
 
 def distorter(img, x_volume, y_volume):
     (h, w, c) = img.shape
@@ -207,82 +207,78 @@ def face_reshape(img_path, csv_path):
     #   ]
 
 
-    deg_right = math.degrees(convert_deg(right_eye.array[1], right_eye.array[3]))          
-    cutimg_right = rot_cut(imgRGB, deg_right, right_eye.array_center(), right_eye.array_size())
-    deg_left = math.degrees(convert_deg(left_eye.array[1], left_eye.array[3]))
-    cutimg_left = rot_cut(imgRGB, deg_left, left_eye.array_center(), left_eye.array_size())
-    deg_nose = math.degrees(convert_deg(nose.array[1], nose.array[3]))
-    cutimg_nose = rot_cut(imgRGB, deg_nose, nose.array_center(), nose.array_size())
-    deg_mouse = math.degrees(convert_deg(mouse.array[1], mouse.array[3]))
-    cutimg_mouse = rot_cut(imgRGB, deg_mouse, mouse.array_center(), mouse.array_size())
-    #矩形を切り出す，パーツごとの画像arrを生成
-    parts_img=[cutimg_right, cutimg_left, cutimg_nose, cutimg_mouse]
+  deg_right = math.degrees(convert_deg(right_eye.array[1], right_eye.array[3]))          
+  cutimg_right = rot_cut(imgRGB, deg_right, right_eye.array_center(), right_eye.array_size())
+  deg_left = -math.degrees(convert_deg(left_eye.array[1], left_eye.array[3]))
+  cutimg_left = rot_cut(imgRGB, deg_left, left_eye.array_center(), left_eye.array_size())
+  deg_nose = math.degrees(convert_deg(nose.array[1], nose.array[3]))
+  cutimg_nose = rot_cut(imgRGB, deg_nose, nose.array_center(), nose.array_size())
+  deg_mouse = math.degrees(convert_deg(mouse.array[1], mouse.array[3]))
+  cutimg_mouse = rot_cut(imgRGB, deg_mouse, mouse.array_center(), mouse.array_size())
+  #矩形を切り出す，パーツごとの画像arrを生成
+  parts_img=[cutimg_right, cutimg_left, cutimg_nose, cutimg_mouse]
 
-    #indexsの数だけ画像を生成
-    #最終的に出力される画像の配列
-    img_arr=[]
-    rev_shape=[]
-    for index in indexs:
-        #歪み適応後の画像配列
-        dst_imgs=[]
-        #indexに関したcolumns（属性）の数だけ，dataの値に応じてパーツを歪ませる
-        len_half = int(len(columns)/2)
-        for i in  range(len_half):
-            dst=[]
-            dst = distorter(parts_img[i], 
-                            x_volume=data[columns[2*i]][index],
-                            y_volume=data[columns[2*i+1]][index]
-                            )
-            #columnsの数が2で割り切れないときはx軸方向のみ歪ませる
-            if(i == len_half-1 and len_half*2 < len(columns) ):
-                dst = distorter(parts_img[i+1], 
-                                x_volume=data[columns[2*i]][index],
-                                y_volume=0.0
-                                )
-            #歪み適応後の矩形をすべてもとの角度に回転して戻す（みやりん）
-    #ちの追加 rev_shape
+  #indexsの数だけ画像を生成
+  #最終的に出力される画像の配列
+  img_arr=[]
+  rev_shape=[]
+  for index in indexs:
+      #歪み適応後の画像配列
+      dst_imgs=[]
+      #indexに関したcolumns（属性）の数だけ，dataの値に応じてパーツを歪ませる
+      len_half = int(len(columns)/2)
+      for i in  range(len_half):
+          dst=[]
+          dst = distorter(parts_img[i], 
+                          x_volume=data[columns[2*i]][index],
+                          y_volume=data[columns[2*i+1]][index]
+                          )
+          #columnsの数が2で割り切れないときはx軸方向のみ歪ませる
+          if(i == len_half-1 and len_half*2 < len(columns) ):
+              dst = distorter(parts_img[i+1], 
+                              x_volume=data[columns[2*i]][index],
+                              y_volume=0.0
+                              )
+          #歪み適応後の矩形をすべてもとの角度に回転して戻す（みやりん）
+  #ちの追加 rev_shape
 
-            (hr, wr, cr) = dst.shape
-            # rev_shape.append(dst.shape)
-            print(type(rev_shape))
-            reverse_canvas_size = int(math.sqrt(hr*hr + wr*wr))
-            reverse = cv2.getRotationMatrix2D([wr/2, hr/2], -deg_right, 1.0)
-            reverse[0][2] += int(reverse_canvas_size / 2) - (wr/2) 
-            reverse[1][2] += int(reverse_canvas_size / 2) - (hr/2)
-            revimg = cv2.warpAffine(dst, reverse, [reverse_canvas_size, reverse_canvas_size])
-            dst_imgs.append(revimg)
+          (hr, wr, cr) = dst.shape
+          # rev_shape.append(dst.shape)
+          print(type(rev_shape))
+          reverse_canvas_size = int(math.sqrt(hr*hr + wr*wr))
+          reverse = cv2.getRotationMatrix2D([wr/2, hr/2], -deg_right, 1.0)
+          reverse[0][2] += int(reverse_canvas_size / 2) - (wr/2) 
+          reverse[1][2] += int(reverse_canvas_size / 2) - (hr/2)
+          revimg = cv2.warpAffine(dst, reverse, [reverse_canvas_size, reverse_canvas_size])
+          dst_imgs.append(revimg)
 
-            rev_shape.append(revimg.shape)
-        #歪ませたパーツをくっつけて1枚の画像にする（ちのっち）
-        new_img= img.copy()
-        #new_img = cv2.cvtColor(new_img , cv2.COLOR_BGR2RGB)
+          rev_shape.append(revimg.shape)
+      #歪ませたパーツをくっつけて1枚の画像にする（ちのっち）
+      new_img= img.copy()
+      #new_img = cv2.cvtColor(new_img , cv2.COLOR_BGR2RGB)
 
-        #for column in  columns:
-        #各部位の4点座標を持った配列の格納順は[左上,右上,左下,右下]を想定
-        #右目 right_eye_plot
-        #if right_eye_el != 0
-        merge_image(new_img,dst_imgs[0],rev_shape[0],right_eye)
-        #左目 left_eye_plot
-        #if left_eye_el!=0:
-        merge_image(new_img,dst_imgs[1],rev_shape[1],left_eye)
-        #鼻 nose_plot
-        #if nose_el != 0:
-        merge_image(new_img,dst_imgs[2],rev_shape[2],nose)
-        #口 mouth_plot
-        #if mouth_el!= 0:
-        #merge_image(new_img,dst,rev_shape[3],mouse)
+      #for column in  columns:
+      #各部位の4点座標を持った配列の格納順は[左上,右上,左下,右下]を想定
+      #右目 right_eye_plot
+      #if right_eye_el != 0
+      merge_image(new_img,dst_imgs[0],rev_shape[0],right_eye)
+      #左目 left_eye_plot
+      #if left_eye_el!=0:
+      merge_image(new_img,dst_imgs[1],rev_shape[1],left_eye)
+      #鼻 nose_plot
+      #if nose_el != 0:
+      merge_image(new_img,dst_imgs[2],rev_shape[2],nose)
+      #口 mouth_plot
+      #if mouth_el!= 0:
+      #merge_image(new_img,dst,rev_shape[3],mouse)
 
-        img_arr.append(new_img)
+      img_arr.append(new_img)
 
-    #保存
-    #img_arr
-    filenames = []
-    for i in range(len(indexs)):
-      f_name = "reshape"+str(i)+".jpg"
-      filenames.append(f_name)
-      cv2.imwrite("static/assets/reshaped/" + f_name,img_arr[i])
-    return filenames
-  
-  else:
-    print("err: results.multi_face_landmarks is None")
-    return []
+  #保存
+  #img_arr
+  filenames = []
+  for i in range(len(indexs)):
+    f_name = "reshape"+str(i)+".jpg"
+    filenames.append(f_name)
+    cv2.imwrite("static/assets/reshaped/" + f_name,img_arr[i])
+  return filenames
