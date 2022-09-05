@@ -8,28 +8,36 @@
 </head>
 
 <body>
+  <style>
+    .flex {
+      display: flex;
+    }
+
+    .right {
+      display: flex;
+    }
+  </style>
   <div class="title">FaceGraph</div>
   <form action="/" method="post" enctype="multipart/form-data">
-    <div class="right">ここに画像ボタン。アップロードでプレビュー表示
-      <input type="file" accept='image/*' onchange="previewImage(this);">
-      <p>
-        Preview:<br>
-        <img id="preview" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-          style="max-width:200px;">
-      </p>
-    </div>
+    <div class="flex">
+      <div class="right">ここに画像ボタン。アップロードでプレビュー表示
+        <input type="file" accept='image/*' onchange="previewImage(this);">
+        <p>
+          Preview:<br>
+          <img id="preview" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+            style="max-width:200px;">
+        </p>
+      </div>
 
-    <div class="left">ここにCSVファイルボタン。アップロードで名前表示?
-      <input type="file" accept='.csv'>
+      <div class="left">ここにCSVファイルボタン。アップロードで名前表示?
+        <input type="file" accept='.csv'>
+      </div>
     </div>
     <div class="send_data">
       <input type="submit" value="加工する" name="sending">
       <input type="reset" value="リセット">
     </div>
 
-    <div>
-      <img src={{ img_path }} alt="">
-    </div>
   </form>
 
   <script>
