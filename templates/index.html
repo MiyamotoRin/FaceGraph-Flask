@@ -8,28 +8,81 @@
 </head>
 
 <body>
+  <style>
+    .flex {
+      display: flex;
+    }
+
+    .right {
+      width: 50%;
+      border: 1px solid;
+      position: relative;
+      border-radius: 8px;
+      height: 180px;
+      color: #fafafa;
+      background: #212121;
+   
+      text-align: center;
+    }
+
+    .right:before {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      top: 24px;
+      bottom: 24px;
+      left: 24px;
+      right: 24px;
+      border: dashed 2px #fafafa;
+      color: #fafafa;
+      font-size: 14px;
+      content: 'drag and drop "png" file here';
+      pointer-events: none;
+    }
+
+    .right input {
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 999px;
+      height: 999px;
+      font-size: 999px;
+      opacity: 0;
+    }
+
+    .left {
+      width: 50%;
+      border: 1px solid;
+    }
+
+    .sendData {
+      text-align: center;
+
+    }
+  </style>
   <div class="title">FaceGraph</div>
   <form action="/upload" method="post" enctype="multipart/form-data">
-    <div class="right">ここに画像ボタン。アップロードでプレビュー表示
-      <input type="file" name='file_img' accept='image/*' onchange="previewImage(this);">
-      <p>
-        Preview:<br>
-        <img id="preview" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
-          style="max-width:200px;">
-      </p>
-    </div>
+    <div class="flex">
+      <div class="right">
+        <input type="file" name='file_img' accept='image/*' onchange="previewImage(this);">
+        <p>
+          Preview:<br>
+          <img id="preview" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
+            style="max-width:200px;">
+        </p>
+      </div>
 
-    <div class="left">ここにCSVファイルボタン。アップロードで名前表示?
-      <input type="file" name="file_csv" accept='.csv'>
+      <div class="left">ここにCSVファイルボタン。アップロードで名前表示?
+        <input type="file" name="file_csv" accept='.csv'>
+      </div>
     </div>
-    <div class="send_data">
+    <div class="sendData">
       <input type="submit" value="加工する" name="sending">
       <input type="reset" value="リセット">
     </div>
 
-    <div>
-      <img src={{ img_path }} alt="">
-    </div>
   </form>
 
   <script>
@@ -40,6 +93,10 @@
       });
       fileReader.readAsDataURL(obj.files[0]);
     }
+
+    document.querySelector('input').addEventListener('change', (evt) => {
+      console.log(evt.target.files[0]);
+    });
   </script>
 
 </body>

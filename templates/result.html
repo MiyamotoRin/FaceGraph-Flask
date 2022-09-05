@@ -9,36 +9,53 @@
 
 <body>
   <style>
+    .result {
+      width: 75%;
+      height: 100vh;
+      border: 1px solid;
+    }
+
     .resultAll {
-      width: 30%;
+      width: 25%;
       height: 100vh;
       border: 1px solid;
       overflow-y: scroll;
+      transform: rotateY(180deg);
     }
-    li{
-      width: 100px;
-    }
-    
-    
 
+    .imgs {
+      transform: rotateY(180deg);
+    }
+
+    .results {
+      width: 100%;
+      background-image: contain;
+    }
+
+    .flex {
+      display: flex;
+    }
   </style>
-
-  <div class="result">
-    ここで右側で選んだ画像を表示
-    defaultは一番最初の画像
-  </div>
-  <div class="resultAll">
-    ここはスクロールバー形式で加工画像を全て表示
-    buriburiburiburirburbibrubrirburibriururbi
-  {% for filename in filenames %}
-  <li>
-    <div>
-      <img src={{parent_path+filename}} alt="">
+  <div class="title">Face Graph</div>
+  <div class="flex">
+    <div class="result">
+      ここで右側で選んだ画像を表示
+      defaultは一番最初の画像
     </div>
-  </li>
-  {% endfor %} !
-</div>
-
+    <div class="resultAll">
+      <!-- resultAll直下に何かを書くと、文字が反転しますので、imgsクラスの中にお書きください-->
+      <div class="imgs">
+        ここはスクロールバー形式で加工画像を全て表示<br>
+        {% for filename in filenames %}
+        <li>
+          <div>
+            <img src={{parent_path+filename}} alt="">
+          </div>
+        </li>
+        {% endfor %} !
+      </div>
+    </div>
+  </div>
 </body>
 
 </html>
