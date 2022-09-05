@@ -48,6 +48,7 @@ def uploads_file():
             file.save("./static/assets/uploads/" + filename)
             # アップロード後のページに転送
             fn = UPLOAD_FOLDER + filename
+            #errの場合は[]を返す
             filenames = makefacegraph.face_reshape(fn,"/static/assets/default.csv")
             return render_template('result.html', parent_path = RESHAPED_FOLDER, filenames = filenames)
     return '''
