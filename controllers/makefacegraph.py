@@ -168,7 +168,7 @@ def face_reshape(img_path, csv_path):
 
   deg_right = math.degrees(convert_deg(right_eye.array[1], right_eye.array[3]))          
   cutimg_right = rot_cut(imgRGB, deg_right, right_eye.array_center(), right_eye.array_size())
-  deg_left = math.degrees(convert_deg(left_eye.array[1], left_eye.array[3]))
+  deg_left = -math.degrees(convert_deg(left_eye.array[1], left_eye.array[3]))
   cutimg_left = rot_cut(imgRGB, deg_left, left_eye.array_center(), left_eye.array_size())
   deg_nose = math.degrees(convert_deg(nose.array[1], nose.array[3]))
   cutimg_nose = rot_cut(imgRGB, deg_nose, nose.array_center(), nose.array_size())
