@@ -189,13 +189,13 @@ def face_reshape(img_path, csv_path):
     #u, r, b, l
     #矩形の幅，高さをcoefだけ比例して大きく設定できる→目が二重に描画されるのを防ぐ。でも眉が2重になったりする・・・
     right_eye.array = [ 
-      [right_eye.array[0][0], right_eye.array[0][1] -right_eye.buf_h(0.3)], 
+      [right_eye.array[0][0], right_eye.array[0][1] -right_eye.buf_h(0.35)], 
       [right_eye.array[1][0] - right_eye.buf_w(0.15), right_eye.array[1][1]], 
       [right_eye.array[2][0], right_eye.array[2][1] + right_eye.buf_h(0.15)], 
       [right_eye.array[3][0] + right_eye.buf_w(0.1), right_eye.array[3][1]] 
       ]
     left_eye.array = [ 
-      [left_eye.array[0][0], left_eye.array[0][1] -left_eye.buf_h(0.3)], 
+      [left_eye.array[0][0], left_eye.array[0][1] -left_eye.buf_h(0.35)], 
       [left_eye.array[1][0] - left_eye.buf_w(0.15), left_eye.array[1][1]], 
       [left_eye.array[2][0], left_eye.array[2][1] + left_eye.buf_h(0.15)], 
       [left_eye.array[3][0] + left_eye.buf_w(0.1), left_eye.array[3][1]] 
@@ -207,10 +207,10 @@ def face_reshape(img_path, csv_path):
       [nose.array[3][0] + nose.buf_w(0.05), nose.array[3][1]] 
       ]
     mouse.array = [ 
-      [mouse.array[0][0], mouse.array[0][1] -mouse.buf_h(0.1)], 
-      [mouse.array[1][0] - mouse.buf_w(0.05), mouse.array[1][1]], 
-      [mouse.array[2][0], mouse.array[2][1] + mouse.buf_h(0.05)], 
-      [mouse.array[3][0] + mouse.buf_w(0.05), mouse.array[3][1]] 
+      [mouse.array[0][0], mouse.array[0][1] -mouse.buf_h(0.35)], 
+      [mouse.array[1][0] - mouse.buf_w(0.1), mouse.array[1][1]], 
+      [mouse.array[2][0], mouse.array[2][1] + mouse.buf_h(0.3)], 
+      [mouse.array[3][0] + mouse.buf_w(0.2), mouse.array[3][1]] 
       ]
 
     # ラジアンを度数法に変換
