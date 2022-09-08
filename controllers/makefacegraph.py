@@ -287,7 +287,7 @@ def face_reshape(img_path, csv_path):
       merge_image(new_img,dst_imgs[2],rev_shape[2],nose)
       #口 mouth_plot
       #if mouth_el!= 0:
-      #merge_image(new_img,dst,rev_shape[3],mouse)
+      merge_image(new_img,dst_imgs[3],rev_shape[3],mouse)
 
       img_arr.append(new_img)
 
