@@ -8,6 +8,7 @@ from werkzeug.utils import secure_filename
 import numpy as np
 import controllers.makefacegraph as makefacegraph
 import controllers.deal_csv as deal_csv
+import html
 app = Flask(__name__,  static_folder="static")  
 style = "/static/style/style.css"
 # 画像のアップロード先のディレクトリ
@@ -68,6 +69,11 @@ def uploads_file():
                 fn_csv = UPLOAD_FOLDER + filename_csv
                 #columns, indexsをフロント側で表示させる（配列）文字化けするかも
                 df, columns, indexs = deal_csv.deal_csv(fn_csv)
+                #不正なカラム，インデックスをエスケープ
+                for i in range(len(columns)):
+                    columns[i] =  html.escape(columns[i])
+                for i in range(len(indexs)):
+                    indexs[i] =  html.escape(indexs[i])
                 filenames = makefacegraph.face_reshape(fn_img,fn_csv)
                 return render_template('result2.html', parent_path = RESHAPED_FOLDER, filenames = filenames, csv_columns = columns, csv_indexs = indexs)
     return render_template('index.html')
