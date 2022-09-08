@@ -1,0 +1,44 @@
+HTML CSS JSResult Skip Results Iframe
+EDIT ON
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>6-2-4 サムネイルをクリックすると、メイン画像が切り替わる1</title>
+<meta name="description"  content="書籍「動くWebデザインアイディア帳」のサンプルサイトです">
+
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<!--==============レイアウトを制御する独自のCSSを読み込み===============-->
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
+<link rel="stylesheet" type="text/css" href="static\style\6-2-4.css">
+</head>
+
+<body>
+
+<div class="wrapper">
+  <h1>Gallery</h1>
+  
+  <ul class="gallery">
+    {% for filename in filenames %}
+        <li>
+            <img src={{parent_path+filename}}  alt="">
+        </li>
+    {% endfor %}
+  </ul>
+  <!-- 下の選択肢 -->
+  <ul class="choice-btn">
+    {% for filename in filenames %}
+        <li>
+            <img src={{parent_path+filename}}  alt="">
+        </li>
+    {% endfor %}
+     </ul>
+<!-- /uploadに戻る -->
+<form action="/upload" method="get">
+    <input type="submit" value='再アップロード'>
+</form>
+<!--/wrapper--></div>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+<script src="static\scripts\6-2-4.js"></script></body>
+</html>

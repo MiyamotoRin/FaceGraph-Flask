@@ -44,7 +44,6 @@ def uploads_file():
         # ファイル名がなかった時の処理
         if file_img.filename == '':
             print('画像ファイルがありません')
-            er_ms="画像ファイルがありません"
             return redirect(request.url)
         if file_csv.filename == '':
             print('CSVファイルがありません')
@@ -67,7 +66,7 @@ def uploads_file():
                 # アップロード後のページに転送
                 fn_csv = UPLOAD_FOLDER + filename_csv
                 filenames = makefacegraph.face_reshape(fn_img,fn_csv)
-                return render_template('result.html', parent_path = RESHAPED_FOLDER, filenames = filenames)
+                return render_template('result2.html', parent_path = RESHAPED_FOLDER, filenames = filenames)
     return render_template('index.html')
 
 # @app.route('/failed')
