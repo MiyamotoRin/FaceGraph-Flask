@@ -5,19 +5,10 @@
 ===================================*/
 
 
-/*画像の横幅を100%にしてレスポンシブ化*/
-img{
-  width: 100%;
-  height: auto;
-  object-fit: contain;
-  vertical-align: bottom;/*画像の下にできる余白を削除*/
-}
+
 
 /*メイン画像下に余白をつける*/
 
-.gallery{
-  margin:0 0 5px 0;
-}
 
 /*矢印の設定*/
 
@@ -45,14 +36,48 @@ img{
     transform: rotate(45deg);
 }
 
+
+ /* .wrapper{
+  width:94%;
+  max-width:1500px;
+  margin:0 auto;
+}  */
+/*画像の横幅を100%にしてレスポンシブ化*/
+img{
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  vertical-align: bottom;/*画像の下にできる余白を削除*/
+}
+.flex {
+  display: flex;
+}
+.gallery{
+  margin:0 0 5px 0;
+  width: 75%;
+  height: 100vh;
+  object-fit: contain;
+  border: 1px solid;
+}
+
 /*選択するサムネイル画像の設定*/
+.resultAll {
+  width: 25%;
+  height: 100vh;
+  border: 1px solid;
+  /* overflow-x:scroll; */
+  overflow-y: scroll;
+  /* transform: rotateY(180deg); */
+}
 
 .choice-btn li{
   cursor: pointer;
   outline: none;
   background:grey;
-  width:25%!important;
-  height:50%;
+  width:auto!important;
+  height:auto;
+  margin:0 0 5px 0;
+  /* transform: rotateY(180deg); */
 }
 
 .choice-btn li img{
@@ -70,11 +95,6 @@ img{
 /*========= レイアウトのためのCSS ===============*/
 
 /*エリア全体を中央寄せ*/
-.wrapper{
-  width:94%;
-  max-width:900px;
-  margin:0 auto;
-}
 
 ul{
   margin:0;
