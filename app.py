@@ -70,12 +70,16 @@ def uploads_file():
                 #columns, indexsをフロント側で表示させる（配列）文字化けするかも
                 df, columns, indexs = deal_csv.deal_csv(fn_csv)
                 #不正なカラム，インデックスをエスケープ
+                datas={}
+                filenames = makefacegraph.face_reshape(fn_img,fn_csv)
                 for i in range(len(columns)):
                     columns[i] =  html.escape(columns[i])
+                    
                 for i in range(len(indexs)):
                     indexs[i] =  html.escape(indexs[i])
-                filenames = makefacegraph.face_reshape(fn_img,fn_csv)
-                return render_template('result2.html', parent_path = RESHAPED_FOLDER, filenames = filenames, csv_columns = columns, csv_indexs = indexs)
+                    datas[f'{indexs[i]}']=filenames[i]
+                
+                return render_template('result2.html', parent_path = RESHAPED_FOLDER, filenames = filenames, df=df,csv_columns = columns, csv_indexs = indexs, datas=datas)
     return render_template('index.html')
 
 # @app.route('/failed')
