@@ -12,23 +12,23 @@ import json
 import controllers.deal_csv as deal_csv
 
 def distorter(img, x_volume, y_volume):
-    (h, w, c) = img.shape
-    print("distorter.img shape"+str(img.shape))
-    right_edge = w
-    left_edge = 0
-    top_edge = 0
-    bottom_edge = h
+  (h, w, c) = img.shape
+  print("distorter.img shape"+str(img.shape))
+  right_edge = w
+  left_edge = 0
+  top_edge = 0
+  bottom_edge = h
 
-    flex_x = np.zeros((bottom_edge,right_edge),np.float32)
-    flex_y = np.zeros((bottom_edge,right_edge),np.float32)
-    dst = cv2.remap(img,flex_x,flex_y,cv2.INTER_LINEAR)
-    for y in range(top_edge,bottom_edge):
-        for x in range(left_edge,right_edge):
-            flex_x[y,x] = x + math.sin(x/30) * x_volume
-            flex_y[y,x] = y + math.cos(y/30) * y_volume
-    dst = cv2.remap(img,flex_x,flex_y,cv2.INTER_LINEAR)
-    dst = cv2.cvtColor(dst , cv2.COLOR_BGRA2RGBA)
-    return dst
+  flex_x = np.zeros((bottom_edge,right_edge),np.float32)
+  flex_y = np.zeros((bottom_edge,right_edge),np.float32)
+  dst = cv2.remap(img,flex_x,flex_y,cv2.INTER_LINEAR)
+  for y in range(top_edge,bottom_edge):
+      for x in range(left_edge,right_edge):
+          flex_x[y,x] = x + math.sin(x/30) * x_volume
+          flex_y[y,x] = y + math.cos(y/30) * y_volume
+  dst = cv2.remap(img,flex_x,flex_y,cv2.INTER_LINEAR)
+  dst = cv2.cvtColor(dst , cv2.COLOR_BGRA2RGBA)
+  return dst
 
 def convert_deg(p1, p2):
   # 二点間の座標の差をとって傾きの角度を求める
@@ -43,6 +43,8 @@ def convert_deg(p1, p2):
 
 #欲しい領域のみ回転させる。切り出しと回転が同時なイメージ。
 def rot_cut(src_img, deg, center, size):
+    if deg < 0:
+      deg = -deg
     src_img_a = cv2.cvtColor(src_img, cv2.COLOR_RGB2RGBA)
     rot_mat = cv2.getRotationMatrix2D(center, deg, 1.0)
     rot_mat[0][2] += -center[0]+size[0]/2 # -(元画像内での中心位置)+(切り抜きたいサイズの中心)
@@ -104,21 +106,21 @@ class ClassifyPolymesh:
     size = [int(height), int(width)]
     return size
 def merge_image(new_img,dst,rev_shape,body_parts):
-    #new_img,dst,各部位の4頂点の座標(部位以外の部分を0埋めしたもの)を受け取り、4頂点が示す長方形の範囲でnew_imgとdstを合成
-    arr_center_int = [int(body_parts.array_center()[0]), int(body_parts.array_center()[1])]
-    print(arr_center_int)
-    print(rev_shape)
-    for y in range(-int(rev_shape[0]/2),int(rev_shape[0]/2)):
-        for x in range (-int(rev_shape[1]/2), +int(rev_shape[1]/2)):
-            #(0,0,0)のときは何もしない
-            # try:
-            if not (np.all( dst[y+int(rev_shape[0]/2)][x+int(rev_shape[1]/2) ][3] < 255 )) :
-              new_img[y+arr_center_int[1]][x+arr_center_int[0]] = dst[y+int(rev_shape[0]/2)][x+int(rev_shape[1]/2)]  
-            # except Exception as e:
-            #   print("err")
-            # if np.all(dst[y+arr_center_int[1]][x+arr_center_int[0]] != (0,0,0)):
-            #        new_img[y+arr_center_int[1]][x+arr_center_int[0]] = dst[y+arr_center_int[1]][x+arr_center_int[0]]  
-    return new_img
+  #new_img,dst,各部位の4頂点の座標(部位以外の部分を0埋めしたもの)を受け取り、4頂点が示す長方形の範囲でnew_imgとdstを合成
+  arr_center_int = [int(body_parts.array_center()[0]), int(body_parts.array_center()[1])]
+  print(arr_center_int)
+  print(rev_shape)
+  for y in range(-int(rev_shape[0]/2),int(rev_shape[0]/2)):
+      for x in range (-int(rev_shape[1]/2), +int(rev_shape[1]/2)):
+          #(0,0,0)のときは何もしない
+          # try:
+          if not (np.all( dst[y+int(rev_shape[0]/2)][x+int(rev_shape[1]/2) ][3] < 255 )) :
+            new_img[y+arr_center_int[1]][x+arr_center_int[0]] = dst[y+int(rev_shape[0]/2)][x+int(rev_shape[1]/2)]  
+          # except Exception as e:
+          #   print("err")
+          # if np.all(dst[y+arr_center_int[1]][x+arr_center_int[0]] != (0,0,0)):
+          #        new_img[y+arr_center_int[1]][x+arr_center_int[0]] = dst[y+arr_center_int[1]][x+arr_center_int[0]]  
+  return new_img
 
 def face_reshape(img_path, csv_path):
   #画像Path
