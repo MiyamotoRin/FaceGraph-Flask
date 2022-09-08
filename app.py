@@ -17,8 +17,12 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'csv'])
 
 def allwed_file(filename):
     # .があるかどうかのチェックと、拡張子の確認
+    #良悪と拡張子を返す
     # OKなら１、だめなら0
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    if('.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS):
+        return [1,filename.rsplit('.', 1)[1].lower()]
+    else:
+        return [0, '']
 
 
 @app.route("/")  
@@ -41,13 +45,14 @@ def uploads_file():
             print('ファイルがありません')
             return redirect(request.url)
         # ファイルのチェック
-        if file and allwed_file(file.filename):
-            # 危険な文字を削除（サニタイズ処理）
-            filename = secure_filename(file.filename)
+        check_extention = allwed_file(file.filename)
+        if file and check_extention[0]:
+            uploaded_fn = str(dt.timestamp(dt.now())) +"."+ check_extention[1]
             # ファイルの保存
-            file.save("./static/assets/uploads/" + filename)
+            file.save("./static/assets/uploads/" + uploaded_fn)
             # アップロード後のページに転送
-            fn = UPLOAD_FOLDER + filename
+            fn = UPLOAD_FOLDER + uploaded_fn
+            #errの場合は[]を返す
             filenames = makefacegraph.face_reshape(fn,"/static/assets/default.csv")
             return render_template('result.html', parent_path = RESHAPED_FOLDER, filenames = filenames)
     return '''
