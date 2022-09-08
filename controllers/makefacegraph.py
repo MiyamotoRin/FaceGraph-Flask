@@ -35,16 +35,14 @@ def convert_deg(p1, p2):
   diff_x = p1[0] - p2[0]
   diff_y = p1[1] - p2[1]
   if diff_x != 0:
-    # tilt = diff_y / diff_x
-    # arctan = math.atan(tilt)
     arctan = math.atan2(diff_y, diff_x)
     print('arctan:',arctan)
     return arctan
 
 #欲しい領域のみ回転させる。切り出しと回転が同時なイメージ。
 def rot_cut(src_img, deg, center, size):
-    if deg < 0:
-      deg = -deg
+    # if deg < 0:
+    #   deg = -deg
     src_img_a = cv2.cvtColor(src_img, cv2.COLOR_RGB2RGBA)
     rot_mat = cv2.getRotationMatrix2D(center, deg, 1.0)
     rot_mat[0][2] += -center[0]+size[0]/2 # -(元画像内での中心位置)+(切り抜きたいサイズの中心)
@@ -59,7 +57,6 @@ class ClassifyPolymesh:
     self.pl = pl # 左の値
     self.w = w
     self.h = h
-    
     # ４つの点の画像内での座標
     self.array = [[0, 0], [0, 0], [0, 0], [0, 0]]
 
@@ -100,11 +97,11 @@ class ClassifyPolymesh:
   # 顔のパーツの長方形のサイズを求める
   def array_size(self):
     center = self.array_center()
-    
     width = math.sqrt((self.array[0][0] - self.array[2][0]) ** 2 + (self.array[0][1] - self.array[2][1]) ** 2)
     height = math.sqrt((self.array[1][0] - self.array[3][0]) ** 2 + (self.array[1][1] - self.array[3][1]) ** 2)
     size = [int(height), int(width)]
     return size
+
 def merge_image(new_img,dst,rev_shape,body_parts):
   #new_img,dst,各部位の4頂点の座標(部位以外の部分を0埋めしたもの)を受け取り、4頂点が示す長方形の範囲でnew_imgとdstを合成
   arr_center_int = [int(body_parts.array_center()[0]), int(body_parts.array_center()[1])]
@@ -180,17 +177,8 @@ def face_reshape(img_path, csv_path):
 
   # ラジアンを度数法に変換
   deg_right = math.degrees(convert_deg(right_eye.array[1], right_eye.array[3]))
-  print('degrees:', deg_right)
-  # if deg_right > 0:
-  #   deg_right = -deg_right
   deg_left = math.degrees(convert_deg(left_eye.array[1], left_eye.array[3]))
-  print('degrees:', deg_left)
-  # if deg_left < 0:
-  #   deg_left = -deg_left
   deg_nose = math.degrees(convert_deg(nose.array[1], nose.array[3]))
-  print('degrees:', deg_nose)
-  # if deg_nose > 0:
-  #   deg_nose = -deg_nose
   deg_mouse = math.degrees(convert_deg(mouse.array[1], mouse.array[3]))
 
   cutimg_right = rot_cut(imgRGB, deg_right, right_eye.array_center(), right_eye.array_size())
@@ -210,31 +198,37 @@ def face_reshape(img_path, csv_path):
       #indexに関したcolumns（属性）の数だけ，dataの値に応じてパーツを歪ませる
       len_half = int(len(columns)/2)
       for i in  range(len_half):
-          dst=[]
-          dst = distorter(parts_img[i], 
-                          x_volume=data[columns[2*i]][index],
-                          y_volume=data[columns[2*i+1]][index]
-                          )
-          #columnsの数が2で割り切れないときはx軸方向のみ歪ませる
-          if(i == len_half-1 and len_half*2 < len(columns) ):
-              dst = distorter(parts_img[i+1], 
-                              x_volume=data[columns[2*i]][index],
-                              y_volume=0.0
-                              )
-          #歪み適応後の矩形をすべてもとの角度に回転して戻す（みやりん）
-  #ちの追加 rev_shape
-
-          (hr, wr, cr) = dst.shape
-          # rev_shape.append(dst.shape)
-          print(type(rev_shape))
-          reverse_canvas_size = int(math.sqrt(hr*hr + wr*wr))
+        dst=[]
+        dst = distorter(parts_img[i], 
+                        x_volume=data[columns[2*i]][index],
+                        y_volume=data[columns[2*i+1]][index]
+                        )
+        #columnsの数が2で割り切れないときはx軸方向のみ歪ませる
+        if(i == len_half-1 and len_half*2 < len(columns) ):
+            dst = distorter(parts_img[i+1], 
+                            x_volume=data[columns[2*i]][index],
+                            y_volume=0.0
+                            )
+        #歪み適応後の矩形をすべてもとの角度に回転して戻す（みやりん）
+        #ちの追加 rev_shape
+        (hr, wr, cr) = dst.shape
+        # rev_shape.append(dst.shape)
+        print(type(rev_shape))
+        reverse_canvas_size = int(math.sqrt(hr*hr + wr*wr))
+        if i == 0 or i == 1:
           reverse = cv2.getRotationMatrix2D([wr/2, hr/2], -deg_right, 1.0)
-          reverse[0][2] += int(reverse_canvas_size / 2) - (wr/2) 
-          reverse[1][2] += int(reverse_canvas_size / 2) - (hr/2)
-          revimg = cv2.warpAffine(dst, reverse, [reverse_canvas_size, reverse_canvas_size])
-          dst_imgs.append(revimg)
+        elif i == 2 or i == 3:
+          reverse = cv2.getRotationMatrix2D([wr/2, hr/2], -deg_left, 1.0)
+        elif i == 4 or i == 5:
+          reverse = cv2.getRotationMatrix2D([wr/2, hr/2], -deg_nose, 1.0)
+        else:
+          reverse = cv2.getRotationMatrix2D([wr/2, hr/2], -deg_right, 1.0)
+        reverse[0][2] += int(reverse_canvas_size / 2) - (wr/2) 
+        reverse[1][2] += int(reverse_canvas_size / 2) - (hr/2)
+        revimg = cv2.warpAffine(dst, reverse, [reverse_canvas_size, reverse_canvas_size])
+        dst_imgs.append(revimg)
 
-          rev_shape.append(revimg.shape)
+        rev_shape.append(revimg.shape)
       #歪ませたパーツをくっつけて1枚の画像にする（ちのっち）
       new_img= img.copy()
       #new_img = cv2.cvtColor(new_img , cv2.COLOR_BGR2RGB)
