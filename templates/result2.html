@@ -38,6 +38,14 @@ EDIT ON
     <input type="submit" value='再アップロード'>
 </form>
 <!--/wrapper--></div>
+
+{% for  c in csv_columns %}
+<p>{{c}}</p>
+{% endfor %}
+{% for  i in csv_indexs %}
+<p>{{i}}</p>
+{% endfor %}
+
 <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 <script src="static\scripts\6-2-4.js"></script></body>

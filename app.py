@@ -7,6 +7,7 @@ import os
 from werkzeug.utils import secure_filename
 import numpy as np
 import controllers.makefacegraph as makefacegraph
+import controllers.deal_csv as deal_csv
 app = Flask(__name__,  static_folder="static")  
 style = "/static/style/style.css"
 # 画像のアップロード先のディレクトリ
@@ -65,8 +66,10 @@ def uploads_file():
                 file_csv.save("./static/assets/uploads/" + filename_csv)
                 # アップロード後のページに転送
                 fn_csv = UPLOAD_FOLDER + filename_csv
+                #columns, indexsをフロント側で表示させる（配列）文字化けするかも
+                df, columns, indexs = deal_csv.deal_csv(fn_csv)
                 filenames = makefacegraph.face_reshape(fn_img,fn_csv)
-                return render_template('result2.html', parent_path = RESHAPED_FOLDER, filenames = filenames)
+                return render_template('result2.html', parent_path = RESHAPED_FOLDER, filenames = filenames, csv_columns = columns, csv_indexs = indexs)
     return render_template('index.html')
 
 # @app.route('/failed')
