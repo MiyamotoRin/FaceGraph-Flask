@@ -29,13 +29,16 @@ def distorter(img, x_volume, y_volume):
     dst = cv2.remap(img,flex_x,flex_y,cv2.INTER_LINEAR)
     dst = cv2.cvtColor(dst , cv2.COLOR_BGRA2RGBA)
     return dst
+
 def convert_deg(p1, p2):
   # 二点間の座標の差をとって傾きの角度を求める
   diff_x = p1[0] - p2[0]
   diff_y = p1[1] - p2[1]
   if diff_x != 0:
-    tilt = diff_y / diff_x
-    arctan = math.atan(tilt)
+    # tilt = diff_y / diff_x
+    # arctan = math.atan(tilt)
+    arctan = math.atan2(diff_y, diff_x)
+    print('arctan:',arctan)
     return arctan
 
 #欲しい領域のみ回転させる。切り出しと回転が同時なイメージ。
@@ -44,22 +47,25 @@ def rot_cut(src_img, deg, center, size):
     rot_mat = cv2.getRotationMatrix2D(center, deg, 1.0)
     rot_mat[0][2] += -center[0]+size[0]/2 # -(元画像内での中心位置)+(切り抜きたいサイズの中心)
     rot_mat[1][2] += -center[1]+size[1]/2 # 同上
-    return cv2.warpAffine(src_img_a, rot_mat, size,borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 255, 0))
+    return cv2.warpAffine(src_img_a, rot_mat, size, borderMode=cv2.BORDER_CONSTANT, borderValue=(0, 0, 255, 0))
 
 class ClassifyPolymesh:
   def __init__(self, pu, pr, pb, pl, w, h):
-    self.pu = pu
-    self.pr = pr
-    self.pb = pb
-    self.pl = pl
+    self.pu = pu # 顔のパーツのFaceMeshのインデックスのうち上の値
+    self.pr = pr # 右の値
+    self.pb = pb # 下の値
+    self.pl = pl # 左の値
     self.w = w
     self.h = h
     
+    # ４つの点の画像内での座標
     self.array = [[0, 0], [0, 0], [0, 0], [0, 0]]
-    
+
+  # FaceMeshのインデックスと入力された数値が一致すればTrueを返すための関数  
   def judge(self, point):
     return point == self.pu or point == self.pr or point == self.pb or point == self.pl
   
+  # どこに座標の情報を格納するか判断する関数
   def store(self, lm, point):
     if(point == self.pu):
       i = 0
@@ -73,8 +79,8 @@ class ClassifyPolymesh:
     x, y = int(lm.x*self.w), int(lm.y*self.h)
     self.array[i] = [x, y]
     
+  # 中心の座標を求める
   def array_center(self):
-    # 中心の座標を求める
     mid_x = (self.array[1][0] + self.array[3][0]) / 2
     mid_y = (self.array[1][1] + self.array[3][1]) / 2
     center = [mid_x, mid_y]
@@ -89,8 +95,8 @@ class ClassifyPolymesh:
     # center = [(a_x+b_x)/2, (a_y+b_y)/2]
     return center
 
+  # 顔のパーツの長方形のサイズを求める
   def array_size(self):
-    # 長方形のサイズを求める
     center = self.array_center()
     
     width = math.sqrt((self.array[0][0] - self.array[2][0]) ** 2 + (self.array[0][1] - self.array[2][1]) ** 2)
@@ -141,7 +147,7 @@ def face_reshape(img_path, csv_path):
   faceMesh = mpFaceMesh.FaceMesh(max_num_faces=1)
   drawSpec = mpDraw.DrawingSpec(thickness=1, circle_radius=2)
   right_eye = ClassifyPolymesh(27, 244, 230, 124, w, h)
-  left_eye = ClassifyPolymesh(443, 342, 450, 465, w, h)
+  left_eye = ClassifyPolymesh(443, 359, 450, 465, w, h)
   nose = ClassifyPolymesh(197, 266, 164, 36, w, h)
   # right_eye = ClassifyPolymesh(27, 133, 145, 33)
   # left_eye = ClassifyPolymesh(386, 263, 374, 362)
@@ -170,15 +176,19 @@ def face_reshape(img_path, csv_path):
           mouse.store(lm, cnt)      
         cnt +=1
 
+  # ラジアンを度数法に変換
   deg_right = math.degrees(convert_deg(right_eye.array[1], right_eye.array[3]))
-  if deg_right > 0:
-    deg_right = -deg_right
+  print('degrees:', deg_right)
+  # if deg_right > 0:
+  #   deg_right = -deg_right
   deg_left = math.degrees(convert_deg(left_eye.array[1], left_eye.array[3]))
-  if deg_left > 0:
-    deg_left = -deg_left
+  print('degrees:', deg_left)
+  # if deg_left < 0:
+  #   deg_left = -deg_left
   deg_nose = math.degrees(convert_deg(nose.array[1], nose.array[3]))
-  if deg_nose > 0:
-    deg_nose = -deg_nose
+  print('degrees:', deg_nose)
+  # if deg_nose > 0:
+  #   deg_nose = -deg_nose
   deg_mouse = math.degrees(convert_deg(mouse.array[1], mouse.array[3]))
 
   cutimg_right = rot_cut(imgRGB, deg_right, right_eye.array_center(), right_eye.array_size())
@@ -250,5 +260,5 @@ def face_reshape(img_path, csv_path):
   for i in range(len(indexs)):
     f_name = "reshape"+str(i)+".jpg"
     filenames.append(f_name)
-    cv2.imwrite("static/assets/reshaped/" + f_name,img_arr[i])
+    cv2.imwrite("static/assets/reshaped/" + f_name, img_arr[i])
   return filenames
