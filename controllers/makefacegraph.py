@@ -38,6 +38,11 @@ def convert_deg(p1, p2):
     arctan = math.atan2(diff_y, diff_x)
     print('arctan:',arctan)
     return arctan
+  else:
+    if diff_y > 0:
+      return math.pi / 2
+    else:
+      return -math.pi / 2
 
 #欲しい領域のみ回転させる。切り出しと回転が同時なイメージ。
 def rot_cut(src_img, deg, center, size):
@@ -145,8 +150,8 @@ def face_reshape(img_path, csv_path):
   mpFaceMesh = mp.solutions.face_mesh
   faceMesh = mpFaceMesh.FaceMesh(max_num_faces=1)
   drawSpec = mpDraw.DrawingSpec(thickness=1, circle_radius=2)
-  right_eye = ClassifyPolymesh(27, 244, 230, 124, w, h)
-  left_eye = ClassifyPolymesh(443, 359, 450, 465, w, h)
+  right_eye = ClassifyPolymesh(223, 244, 230, 226, w, h)
+  left_eye = ClassifyPolymesh(443, 446, 450, 464, w, h)
   nose = ClassifyPolymesh(197, 266, 164, 36, w, h)
   # right_eye = ClassifyPolymesh(27, 133, 145, 33)
   # left_eye = ClassifyPolymesh(386, 263, 374, 362)
