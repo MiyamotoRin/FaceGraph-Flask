@@ -33,8 +33,7 @@ def convert_deg(p1, p2):
   diff_x = p1[0] - p2[0]
   diff_y = p1[1] - p2[1]
   if diff_x != 0:
-    tilt = diff_y / diff_x
-    arctan = math.atan(tilt)
+    arctan = math.atan2(diff_y, diff_x)
     return arctan
 
 #欲しい領域のみ回転させる。切り出しと回転が同時なイメージ。
@@ -143,7 +142,7 @@ def face_reshape(img_path, csv_path):
   # right_eye = ClassifyPolymesh(27, 133, 145, 33)
   # left_eye = ClassifyPolymesh(386, 263, 374, 362)
   # nose = ClassifyPolymesh(195, 358, 2, 49)
-  mouse = ClassifyPolymesh(0, 291, 17, 61, w, h)
+  mouse = ClassifyPolymesh(0, 287, 17, 57, w, h)
 
   # 点番号用のカウント変数
   cnt = 0
@@ -182,56 +181,64 @@ def face_reshape(img_path, csv_path):
   img_arr=[]
   rev_shape=[]
   for index in indexs:
-      #歪み適応後の画像配列
-      dst_imgs=[]
-      #indexに関したcolumns（属性）の数だけ，dataの値に応じてパーツを歪ませる
-      len_half = int(len(columns)/2)
-      for i in  range(len_half):
-          dst=[]
-          dst = distorter(parts_img[i], 
+    #歪み適応後の画像配列
+    dst_imgs=[]
+    #indexに関したcolumns（属性）の数だけ，dataの値に応じてパーツを歪ませる
+    len_half = int(len(columns)/2)
+    for i in  range(len_half):
+      dst=[]
+      dst = distorter(parts_img[i], 
+                      x_volume=data[columns[2*i]][index],
+                      y_volume=data[columns[2*i+1]][index]
+                      )
+      #columnsの数が2で割り切れないときはx軸方向のみ歪ませる
+      if(i == len_half-1 and len_half*2 < len(columns) ):
+          dst = distorter(parts_img[i+1], 
                           x_volume=data[columns[2*i]][index],
-                          y_volume=data[columns[2*i+1]][index]
+                          y_volume=0.0
                           )
-          #columnsの数が2で割り切れないときはx軸方向のみ歪ませる
-          if(i == len_half-1 and len_half*2 < len(columns) ):
-              dst = distorter(parts_img[i+1], 
-                              x_volume=data[columns[2*i]][index],
-                              y_volume=0.0
-                              )
-          #歪み適応後の矩形をすべてもとの角度に回転して戻す（みやりん）
-  #ちの追加 rev_shape
+      #歪み適応後の矩形をすべてもとの角度に回転して戻す（みやりん）
+      #ちの追加 rev_shape
+      (hr, wr, cr) = dst.shape
+      # rev_shape.append(dst.shape)
+      print(type(rev_shape))
+      reverse_canvas_size = int(math.sqrt(hr*hr + wr*wr))
+      if i == 0 or i == 1:
+        reverse = cv2.getRotationMatrix2D([wr/2, hr/2], -deg_right, 1.0)
+      elif i == 2 or i == 3:
+        reverse = cv2.getRotationMatrix2D([wr/2, hr/2], -deg_left, 1.0)
+      elif i == 4 or i == 5:
+        reverse = cv2.getRotationMatrix2D([wr/2, hr/2], -deg_nose, 1.0)
+      elif i == 6 or i == 7:
+        reverse = cv2.getRotationMatrix2D([wr/2, hr/2], -deg_mouse, 1.0)
+      else:
+        reverse = cv2.getRotationMatrix2D([wr/2, hr/2], -deg_right, 1.0)
+      reverse[0][2] += int(reverse_canvas_size / 2) - (wr/2) 
+      reverse[1][2] += int(reverse_canvas_size / 2) - (hr/2)
+      revimg = cv2.warpAffine(dst, reverse, [reverse_canvas_size, reverse_canvas_size])
+      dst_imgs.append(revimg)
 
-          (hr, wr, cr) = dst.shape
-          # rev_shape.append(dst.shape)
-          print(type(rev_shape))
-          reverse_canvas_size = int(math.sqrt(hr*hr + wr*wr))
-          reverse = cv2.getRotationMatrix2D([wr/2, hr/2], -deg_right, 1.0)
-          reverse[0][2] += int(reverse_canvas_size / 2) - (wr/2) 
-          reverse[1][2] += int(reverse_canvas_size / 2) - (hr/2)
-          revimg = cv2.warpAffine(dst, reverse, [reverse_canvas_size, reverse_canvas_size])
-          dst_imgs.append(revimg)
+      rev_shape.append(revimg.shape)
+    #歪ませたパーツをくっつけて1枚の画像にする（ちのっち）
+    new_img= img.copy()
+    #new_img = cv2.cvtColor(new_img , cv2.COLOR_BGR2RGB)
 
-          rev_shape.append(revimg.shape)
-      #歪ませたパーツをくっつけて1枚の画像にする（ちのっち）
-      new_img= img.copy()
-      #new_img = cv2.cvtColor(new_img , cv2.COLOR_BGR2RGB)
+    #for column in  columns:
+    #各部位の4点座標を持った配列の格納順は[左上,右上,左下,右下]を想定
+    #右目 right_eye_plot
+    #if right_eye_el != 0
+    merge_image(new_img,dst_imgs[0],rev_shape[0],right_eye)
+    #左目 left_eye_plot
+    #if left_eye_el!=0:
+    merge_image(new_img,dst_imgs[1],rev_shape[1],left_eye)
+    #鼻 nose_plot
+    #if nose_el != 0:
+    merge_image(new_img,dst_imgs[2],rev_shape[2],nose)
+    #口 mouth_plot
+    #if mouth_el!= 0:
+    merge_image(new_img,dst_imgs[3],rev_shape[3],mouse)
 
-      #for column in  columns:
-      #各部位の4点座標を持った配列の格納順は[左上,右上,左下,右下]を想定
-      #右目 right_eye_plot
-      #if right_eye_el != 0
-      merge_image(new_img,dst_imgs[0],rev_shape[0],right_eye)
-      #左目 left_eye_plot
-      #if left_eye_el!=0:
-      merge_image(new_img,dst_imgs[1],rev_shape[1],left_eye)
-      #鼻 nose_plot
-      #if nose_el != 0:
-      merge_image(new_img,dst_imgs[2],rev_shape[2],nose)
-      #口 mouth_plot
-      #if mouth_el!= 0:
-      #merge_image(new_img,dst,rev_shape[3],mouse)
-
-      img_arr.append(new_img)
+    img_arr.append(new_img)
 
   #保存
   #img_arr
