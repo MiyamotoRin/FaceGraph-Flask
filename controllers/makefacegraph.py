@@ -150,7 +150,10 @@ def face_reshape(img_path, csv_path):
 
   imgRGB = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
   results = faceMesh.process((imgRGB))
-  if results.multi_face_landmarks:
+  #顔認識できなかった場合は終了
+  if results.multi_face_landmarks is None:
+    return []
+  elif results.multi_face_landmarks is not None:
     for faceLms in results.multi_face_landmarks:
       # このループが顔の点分(468)回繰り返される
       # 特定の顔の点を記載したときはこの部分を調整する

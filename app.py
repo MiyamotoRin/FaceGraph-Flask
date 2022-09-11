@@ -75,7 +75,11 @@ def uploads_file():
                 for i in range(len(indexs)):
                     indexs[i] =  html.escape(indexs[i])
                 filenames = makefacegraph.face_reshape(fn_img,fn_csv)
-                return render_template('result2.html', parent_path = RESHAPED_FOLDER, filenames = filenames, csv_columns = columns, csv_indexs = indexs)
+                #顔認識できなかった場合
+                if filenames == []:
+                    return render_template('error.html', err_mes = "顔認識できませんでした")
+                else:
+                    return render_template('result2.html', parent_path = RESHAPED_FOLDER, filenames = filenames, csv_columns = columns, csv_indexs = indexs)
     return render_template('index.html')
 
 # @app.route('/failed')
