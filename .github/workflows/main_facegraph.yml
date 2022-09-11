@@ -60,4 +60,4 @@ jobs:
         with:
           app-name: 'FaceGraph'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_51F68E7ED62F4680AD691F0EC12D28B9 }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_0E32303D9D56423193DBF4FA0A184032 }}
