@@ -11,8 +11,11 @@ import controllers.makefacegraph as mfg
 def fish_eye_lens(img_RGB, w, h, center, r, a = 2, b = 1):
   # 水滴を落としたあとの画像として、元画像のコピーを作成。後処理で
   img_res = img_RGB.copy()
-  for x in range(center[1]-r, center[1]+r):
-    for y in range(center[0]-r, center[0]+r):
+  max_x = min(center[1]+r, h)
+  max_y = min(center[0]+r, w)
+  print(max_x, max_y)
+  for x in range(center[1]-r, max_x):
+    for y in range(center[0]-r, max_y):
       # dはこれから処理を行うピクセルの、水滴の中心からの距離
       d = np.linalg.norm(center - np.array((y,x)))
       #dが水滴の半径より小さければ座標を変換する処理をする
@@ -22,9 +25,11 @@ def fish_eye_lens(img_RGB, w, h, center, r, a = 2, b = 1):
         # 変換後の座標を整数に変換
         p = (center + vector).astype(np.int32)
         # 色のデータの置き換え
-        img_res[y,x,0]=img_RGB[p[0],p[1],1]
-        img_res[y,x,1]=img_RGB[p[0],p[1],2]
-        img_res[y,x,2]=img_RGB[p[0],p[1],0]
+        img_res[y,x,:]=img_RGB[p[0],p[1],:]
+        # img_res[y,x,:]=[0,0,0]
+        # img_res[y,x,0]=img_RGB[p[0],p[1],1]
+        # img_res[y,x,1]=img_RGB[p[0],p[1],2]
+        # img_res[y,x,2]=img_RGB[p[0],p[1],0]
   return img_res
 
 # シームレスに歪める
@@ -41,7 +46,7 @@ def seamless_distort(img_RGB, pos, r):
 def face_reshape(img_path, csv_path):
   # 画像読み込み
   img_RGB = cv2.imread(img_path)
-  (w, h, c) = img_RGB.shape
+  (h, w, c) = img_RGB.shape
 
   mpDraw = mp.solutions.drawing_utils
   mpFaceMesh = mp.solutions.face_mesh
@@ -80,15 +85,23 @@ def face_reshape(img_path, csv_path):
   # img_res = seamless_distort(img_RGB, tmp, 60)
   # 画像変形
   # img_res = seamless_distort(img_RGB, (480, 220), 60)
-  img_res = seamless_distort(img_RGB, list(map(int, right_eye.array_center())), 20)
-  img_res = seamless_distort(img_res, list(map(int, left_eye.array_center())), 20)
-  img_res = seamless_distort(img_res, list(map(int, nose.array_center())), 20)
-  img_res = seamless_distort(img_res, list(map(int, mouse.array_center())), 20)
+  img_res = seamless_distort(img_RGB, list(map(int, right_eye.array_center())), 60)
+  img_res = seamless_distort(img_res, list(map(int, left_eye.array_center())), 60)
+  img_res = seamless_distort(img_res, list(map(int, nose.array_center())), 60)
+  img_res = seamless_distort(img_res, list(map(int, mouse.array_center())), 60)
 
-  for i in range(100, w-111, 100):
-    for j in range(100, h-111, 100):
-      print(i, j)
-      img_res = seamless_distort(img_res, [j, i], 10)
+  # for i in range(4):
+  #   img_res = seamless_distort(img_res, right_eye.array[i], 10)
+  #   img_res = seamless_distort(img_res, left_eye.array[i], 10)
+  #   img_res = seamless_distort(img_res, nose.array[i], 10)
+  #   img_res = seamless_distort(img_res, mouse.array[i], 10)
+    
+
+  # 座標確認用
+  # for i in range(100, w-106, 100):
+  #   for j in range(100, h-106, 100):
+  #     print(i, j)
+  #     img_res = seamless_distort(img_res, [j, i], 5)
 
   # 保存
   filenames = []
