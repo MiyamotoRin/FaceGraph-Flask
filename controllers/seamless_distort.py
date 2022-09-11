@@ -8,12 +8,11 @@ from PIL import Image
 # import deal_csv
 import controllers.makefacegraph as mfg
 
-def fish_eye_lens(img_RGB, w, h, center, r, a = 2, b = 1):
+def fish_eye_lens(img_RGB, w, h, center, r):
   # 水滴を落としたあとの画像として、元画像のコピーを作成。後処理で
   img_res = img_RGB.copy()
   max_x = min(center[1]+r, h)
   max_y = min(center[0]+r, w)
-  print(max_x, max_y)
   for x in range(center[1]-r, max_x):
     for y in range(center[0]-r, max_y):
       # dはこれから処理を行うピクセルの、水滴の中心からの距離
@@ -51,7 +50,6 @@ def face_reshape(img_path, csv_path):
   mpDraw = mp.solutions.drawing_utils
   mpFaceMesh = mp.solutions.face_mesh
   faceMesh = mpFaceMesh.FaceMesh(max_num_faces=1)
-  drawSpec = mpDraw.DrawingSpec(thickness=1, circle_radius=2)
   right_eye = mfg.ClassifyPolymesh(223, 244, 230, 226, w, h)
   left_eye = mfg.ClassifyPolymesh(443, 446, 450, 464, w, h)
   nose = mfg.ClassifyPolymesh(197, 266, 164, 36, w, h)
@@ -81,27 +79,11 @@ def face_reshape(img_path, csv_path):
           tmp = [int(lm.x * w), int(lm.y * h)]
         cnt += 1
 
-  print(tmp, h, w)
-  # img_res = seamless_distort(img_RGB, tmp, 60)
   # 画像変形
-  # img_res = seamless_distort(img_RGB, (480, 220), 60)
   img_res = seamless_distort(img_RGB, list(map(int, right_eye.array_center())), 60)
   img_res = seamless_distort(img_res, list(map(int, left_eye.array_center())), 60)
   img_res = seamless_distort(img_res, list(map(int, nose.array_center())), 60)
   img_res = seamless_distort(img_res, list(map(int, mouse.array_center())), 60)
-
-  # for i in range(4):
-  #   img_res = seamless_distort(img_res, right_eye.array[i], 10)
-  #   img_res = seamless_distort(img_res, left_eye.array[i], 10)
-  #   img_res = seamless_distort(img_res, nose.array[i], 10)
-  #   img_res = seamless_distort(img_res, mouse.array[i], 10)
-    
-
-  # 座標確認用
-  # for i in range(100, w-106, 100):
-  #   for j in range(100, h-106, 100):
-  #     print(i, j)
-  #     img_res = seamless_distort(img_res, [j, i], 5)
 
   # 保存
   filenames = []
