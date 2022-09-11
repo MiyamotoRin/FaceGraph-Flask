@@ -5,7 +5,7 @@ import math
 import mediapipe as mp
 from PIL import Image
 # csvを読み込む
-# import deal_csv
+import controllers.deal_csv as deal_csv
 import controllers.makefacegraph as mfg
 
 def fish_eye_lens(img_RGB, w, h, center, r):
@@ -26,19 +26,48 @@ def fish_eye_lens(img_RGB, w, h, center, r):
         # 色のデータの置き換え
         img_res[y,x,:]=img_RGB[p[0],p[1],:]
         # img_res[y,x,:]=[0,0,0]
-        # img_res[y,x,0]=img_RGB[p[0],p[1],1]
-        # img_res[y,x,1]=img_RGB[p[0],p[1],2]
-        # img_res[y,x,2]=img_RGB[p[0],p[1],0]
+  return img_res
+
+def fish_eye_lens(img_RGB, w, h, center, r, selected=0):
+  # 水滴を落としたあとの画像として、元画像のコピーを作成。後処理で
+  img_res = img_RGB.copy()
+  max_x = min(center[1]+r, w)
+  max_y = min(center[0]+r, h)
+  for x in range(center[1]-r, max_x):
+    for y in range(center[0]-r, max_y):
+  # for x in range(w):
+    # for y in range(h):
+      # dはこれから処理を行うピクセルの、水滴の中心からの距離
+      d = np.linalg.norm(center - np.array((y,x)))
+      # 水滴の中心を原点とした時の相対的な座標系におけるx,y座標
+      xrel, yrel = x - center[1], y - center[0]
+      # 極座標系におけるthetaの算出
+      theta = math.pi/2.0
+      if xrel != 0:
+        theta = math.atan(yrel/xrel)
+      e = 0.2 # 離心率
+      # 二次曲線の極座標表現
+      R = r / (1 + e * math.cos(theta))
+      #dが水滴の半径より小さければ座標を変換する処理をする
+      if d < R:
+        # vectorは変換ベクトル。説明はコード外で。
+        vector = (d / R)**(1.4) * (np.array((y,x)) - center)
+        # 変換後の座標を整数に変換
+        p = (center + vector).astype(np.int32)
+        print('[xrel, yrel]:', [xrel, yrel], ', theta:', theta, ', R:', R, ', p:', p)
+        # 色のデータの置き換え
+        img_res[y,x,:]=img_RGB[p[0],p[1],:]
+        # img_res[y,x,:]=[0,100,0]
   return img_res
 
 # シームレスに歪める
 # img_RGB: RGB画像, pos: 歪みの中心座標, r: 歪みの半径
 def seamless_distort(img_RGB, pos, r):
-  (w, h, c) = img_RGB.shape
+  (h, w, c) = img_RGB.shape
   #水滴の中心と半径の指定
   center = np.array((pos[1],pos[0]))
   # ピクセルの座標を変換
-  img_res = fish_eye_lens(img_RGB, w, h, center, r)
+  img_res = fish_eye_lens(img_RGB, w, h, center, r, 0)
   return img_res
 
 
@@ -78,6 +107,34 @@ def face_reshape(img_path, csv_path):
         if cnt == 13:
           tmp = [int(lm.x * w), int(lm.y * h)]
         cnt += 1
+
+  
+  #データの読み込み，正規化
+  #"src/assets/default.csv"
+  #pd.dataframe, コラム名，インデックスを返す
+  #data[i][j]の大きさがゆがみパラメータ
+  data, columns, indexs = deal_csv.deal_csv(csv_path)
+  #indexsの数だけ画像を生成
+  #最終的に出力される画像の配列
+  img_arr=[]
+  rev_shape=[]
+  # for index in indexs:
+  #   #歪み適応後の画像配列
+  #   dst_imgs=[]
+  #   #indexに関したcolumns（属性）の数だけ，dataの値に応じてパーツを歪ませる
+  #   len_half = int(len(columns)/2)
+  #   for i in  range(len_half):
+  #     dst=[]
+  #     dst = distorter(parts_img[i], 
+  #                     x_volume=data[columns[2*i]][index],
+  #                     y_volume=data[columns[2*i+1]][index]
+  #                     )
+  #     #columnsの数が2で割り切れないときはx軸方向のみ歪ませる
+  #     if(i == len_half-1 and len_half*2 < len(columns) ):
+  #         dst = distorter(parts_img[i+1], 
+  #                         x_volume=data[columns[2*i]][index],
+  #                         y_volume=0.0
+  #                         )
 
   # 画像変形
   img_res = seamless_distort(img_RGB, list(map(int, right_eye.array_center())), 60)
