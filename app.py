@@ -19,8 +19,12 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'csv'])
 
 def allwed_file(filename):
     # .があるかどうかのチェックと、拡張子の確認
+    #良悪と拡張子を返す
     # OKなら１、だめなら0
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    if('.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS):
+        return [1,filename.rsplit('.', 1)[1].lower()]
+    else:
+        return [0, '']
 
 
 @app.route("/")  
