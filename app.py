@@ -19,8 +19,12 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'csv'])
 
 def allwed_file(filename):
     # .があるかどうかのチェックと、拡張子の確認
+    #良悪と拡張子を返す
     # OKなら１、だめなら0
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+    if('.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS):
+        return [1,filename.rsplit('.', 1)[1].lower()]
+    else:
+        return [0, '']
 
 
 @app.route("/")  
@@ -50,20 +54,25 @@ def uploads_file():
         if file_csv.filename == '':
             print('CSVファイルがありません')
             return redirect(request.url)
+
         # ファイルのチェック(画像)
-        if file_img and allwed_file(file_img.filename):
-            # 危険な文字を削除（サニタイズ処理）
-            filename_img = secure_filename(file_img.filename)
+        check_img_extention = allwed_file(file_img.filename)
+        if file_img and check_img_extention[0]:
+            # # 危険な文字を削除（サニタイズ処理）
+            # filename_img = secure_filename(file_img.filename)
             # ファイルの保存
+            filename_img = str(dt.timestamp(dt.now())) +"."+ check_img_extention[1]
             file_img.save("./static/assets/uploads/" + filename_img)
             # アップロード後のページに転送
             fn_img = UPLOAD_FOLDER + filename_img
 
             # ファイルのチェック(CSVファイル)
-            if file_csv and allwed_file(file_csv.filename):
-                # 危険な文字を削除（サニタイズ処理）
-                filename_csv = secure_filename(file_csv.filename)
+            check_csv_extention = allwed_file(file_csv.filename)
+            if file_csv and check_csv_extention[0]:
+                # # 危険な文字を削除（サニタイズ処理）
+                # filename_csv = secure_filename(file_csv.filename)
                 # ファイルの保存
+                filename_csv = str(dt.timestamp(dt.now())) +"."+ check_csv_extention[1]
                 file_csv.save("./static/assets/uploads/" + filename_csv)
                 # アップロード後のページに転送
                 fn_csv = UPLOAD_FOLDER + filename_csv
