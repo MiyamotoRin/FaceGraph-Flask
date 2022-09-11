@@ -1,12 +1,10 @@
-HTML CSS JSResult Skip Results Iframe
-EDIT ON
 <!DOCTYPE html>
 <html lang="ja">
 
 <head>
     <meta charset="utf-8">
-    <title>6-2-4 サムネイルをクリックすると、メイン画像が切り替わる1</title>
-    <meta name="description" content="書籍「動くWebデザインアイディア帳」のサンプルサイトです">
+    <title>リザルト画面</title>
+    <meta name="description" content="リザルト画面です">
 
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
     <!--==============レイアウトを制御する独自のCSSを読み込み===============-->
@@ -16,37 +14,33 @@ EDIT ON
 
 <body>
     <div class="wrapper">
-        <h1>Gallery</h1>
+        <h1>GALLERY</h1>
+
         <div class="flex">
+            <!-- サムネイル選択 -->
             <div class="resultAll">
                 <ul class="choice-btn">
-                
                 {% for  i in csv_indexs %}
                     <li>
-                        <p>{{i}}</p>
+                        <h3>{{i}}</h3>
                         <img src="{{parent_path+datas[i]}}" alt=""> 
                     </li>
                 {% endfor %}
-            
                 </ul>
             </div>
-
+            <!-- 画像を大画面表示 -->
             <ul class="gallery">
-                {% for filename in filenames %}
+                {% for i in csv_indexs %}
                 <li>
-                    <img src={{parent_path+filename}} alt="">
+                    <b>{{i}}</b>
+                    <img src={{parent_path+datas[i]}} alt="">
                 </li>
                 {% endfor %}
             </ul>
+            <!-- 利用したデータを表示 -->
             <div class="csv_data">
-                <table>
-                    {% for i in csv_indexs %}
-                        <th>{{i}}</th>
-                    {% endfor %}
-                </table>
+                {{table | safe}}
             </div>
-            
-            <!-- 下の選択肢 -->
         </div>
     </div>
     <!-- /uploadに戻る -->

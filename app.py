@@ -19,12 +19,8 @@ ALLOWED_EXTENSIONS = set(['png', 'jpg', 'csv'])
 
 def allwed_file(filename):
     # .があるかどうかのチェックと、拡張子の確認
-    #良悪と拡張子を返す
     # OKなら１、だめなら0
-    if('.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS):
-        return [1,filename.rsplit('.', 1)[1].lower()]
-    else:
-        return [0, '']
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 
 @app.route("/")  
@@ -54,71 +50,45 @@ def uploads_file():
         if file_csv.filename == '':
             print('CSVファイルがありません')
             return redirect(request.url)
-
         # ファイルのチェック(画像)
-        check_img_extention = allwed_file(file_img.filename)
-        if file_img and check_img_extention[0]:
-            # # 危険な文字を削除（サニタイズ処理）
-            # filename_img = secure_filename(file_img.filename)
+        if file_img and allwed_file(file_img.filename):
+            # 危険な文字を削除（サニタイズ処理）
+            filename_img = secure_filename(file_img.filename)
             # ファイルの保存
-            filename_img = str(dt.timestamp(dt.now())) +"."+ check_img_extention[1]
             file_img.save("./static/assets/uploads/" + filename_img)
             # アップロード後のページに転送
             fn_img = UPLOAD_FOLDER + filename_img
 
             # ファイルのチェック(CSVファイル)
-            check_csv_extention = allwed_file(file_csv.filename)
-            if file_csv and check_csv_extention[0]:
-                # # 危険な文字を削除（サニタイズ処理）
-                # filename_csv = secure_filename(file_csv.filename)
+            if file_csv and allwed_file(file_csv.filename):
+                # 危険な文字を削除（サニタイズ処理）
+                filename_csv = secure_filename(file_csv.filename)
                 # ファイルの保存
-                filename_csv = str(dt.timestamp(dt.now())) +"."+ check_csv_extention[1]
                 file_csv.save("./static/assets/uploads/" + filename_csv)
                 # アップロード後のページに転送
                 fn_csv = UPLOAD_FOLDER + filename_csv
-                #columns, indexsをフロント側で表示させる（配列）文字化けするかも
-                df, columns, indexs = deal_csv.deal_csv(fn_csv)
-                #不正なカラム，インデックスをエスケープ
+                
+                filenames = makefacegraph.face_reshape(fn_img , fn_csv)
+                #キーに都道府県、バリューに変形画像を持つ辞書datas
                 datas={}
-                filenames = makefacegraph.face_reshape(fn_img,fn_csv)
+            
+                #columns, indexsをフロント側で表示させる（配列）文字化けするかも
+                df, columns, indexs = deal_csv.deal_raw_csv(fn_csv)
+                #不正なカラム，インデックスをエスケープ
                 for i in range(len(columns)):
                     columns[i] =  html.escape(columns[i])
                     
                 for i in range(len(indexs)):
                     indexs[i] =  html.escape(indexs[i])
+                    #datasにindexs[i]をキー、画像をバリューとして格納
                     datas[f'{indexs[i]}']=filenames[i]
+
+                table = df.to_html(classes="mystyle")
                 
-                return render_template('result2.html', parent_path = RESHAPED_FOLDER, filenames = filenames, df=df,csv_columns = columns, csv_indexs = indexs, datas=datas)
+                return render_template('result2.html', parent_path = RESHAPED_FOLDER, filenames = filenames, df=df,csv_columns = columns, csv_indexs = indexs, datas=datas , table=table)
     return render_template('index.html')
 
-# @app.route('/failed')
-# def failed():
-#     return '''
-#     <!DOCTYPE html>
-# <html>
 
-# <head>
-#     <meta charset="utf-8">
-#     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-#     <title>失敗</title>
-# </head>
-
-# <body>
-#     <div class="title">
-#         Face Graph
-#     </div>
-#     <div class="desc">
-        
-#     </div>
-#     <div class="next">
-#         <form action="/upload" method="get">
-#             <input type="submit" value='加工する'>
-#         </form>
-#     </div>
-# </body>
-
-# </html>
-#     '''
 
 @app.route('/result')
 # ファイルを表示する
