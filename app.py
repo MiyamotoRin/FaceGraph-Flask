@@ -7,6 +7,7 @@ import os
 from werkzeug.utils import secure_filename
 import numpy as np
 import controllers.makefacegraph as makefacegraph
+import controllers.seamless_distort as seamless
 app = Flask(__name__,  static_folder="static")  
 style = "/static/style/style.css"
 # 画像のアップロード先のディレクトリ
@@ -53,7 +54,8 @@ def uploads_file():
             # アップロード後のページに転送
             fn = UPLOAD_FOLDER + uploaded_fn
             #errの場合は[]を返す
-            filenames = makefacegraph.face_reshape(fn,"/static/assets/default.csv")
+            # filenames = makefacegraph.face_reshape(fn,"/static/assets/default.csv")
+            filenames = seamless.face_reshape(fn,"/static/assets/default.csv")
             return render_template('result.html', parent_path = RESHAPED_FOLDER, filenames = filenames)
     return '''
     <!doctype html>
