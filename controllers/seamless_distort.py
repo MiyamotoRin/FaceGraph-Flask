@@ -28,13 +28,19 @@ def fish_eye_lens(img_RGB, w, h, center, r):
         # img_res[y,x,:]=[0,0,0]
   return img_res
 
-def fish_eye_lens(img_RGB, w, h, center, r, selected=0):
+def fish_eye_lens(img_RGB, w, h, center, ROI_size, a, b ):
   # 水滴を落としたあとの画像として、元画像のコピーを作成。後処理で
   img_res = img_RGB.copy()
-  max_x = min(center[1]+r, w)
-  max_y = min(center[0]+r, h)
-  for x in range(center[1]-r, max_x):
-    for y in range(center[0]-r, max_y):
+  ROI_h, ROI_w = ROI_size[0], ROI_size[1]
+  # a: 長径, b: 短径にする
+  if a < b:
+    a, b = b, a
+  e = abs(a**2 - b**2)**(0.5) / a # 離心率
+  print('e: ', e)
+  min_x, min_y = max(center[1]-ROI_w, 0), max(center[0]-ROI_h, 0)
+  max_x, max_y = min(center[1]+ROI_w, w), min(center[0]+ROI_h, h)
+  for x in range(min_x, max_x):
+    for y in range(min_y, max_y):
   # for x in range(w):
     # for y in range(h):
       # dはこれから処理を行うピクセルの、水滴の中心からの距離
@@ -45,16 +51,15 @@ def fish_eye_lens(img_RGB, w, h, center, r, selected=0):
       theta = math.pi/2.0
       if xrel != 0:
         theta = math.atan(yrel/xrel)
-      e = 0.2 # 離心率
       # 二次曲線の極座標表現
-      R = r / (1 + e * math.cos(theta))
+      R = ROI_w / (1 + e * math.cos(theta))
       #dが水滴の半径より小さければ座標を変換する処理をする
       if d < R:
         # vectorは変換ベクトル。説明はコード外で。
         vector = (d / R)**(1.4) * (np.array((y,x)) - center)
         # 変換後の座標を整数に変換
         p = (center + vector).astype(np.int32)
-        print('[xrel, yrel]:', [xrel, yrel], ', theta:', theta, ', R:', R, ', p:', p)
+        # print('[xrel, yrel]:', [xrel, yrel], ', theta:', theta, ', R:', R, ', p:', p)
         # 色のデータの置き換え
         img_res[y,x,:]=img_RGB[p[0],p[1],:]
         # img_res[y,x,:]=[0,100,0]
@@ -67,7 +72,7 @@ def seamless_distort(img_RGB, pos, r):
   #水滴の中心と半径の指定
   center = np.array((pos[1],pos[0]))
   # ピクセルの座標を変換
-  img_res = fish_eye_lens(img_RGB, w, h, center, r, 0)
+  img_res = fish_eye_lens(img_RGB, w, h, center, r, 10, 20)
   return img_res
 
 
@@ -137,10 +142,10 @@ def face_reshape(img_path, csv_path):
   #                         )
 
   # 画像変形
-  img_res = seamless_distort(img_RGB, list(map(int, right_eye.array_center())), 60)
-  img_res = seamless_distort(img_res, list(map(int, left_eye.array_center())), 60)
-  img_res = seamless_distort(img_res, list(map(int, nose.array_center())), 60)
-  img_res = seamless_distort(img_res, list(map(int, mouse.array_center())), 60)
+  img_res = seamless_distort(img_RGB, list(map(int, right_eye.array_center())), right_eye.array_size())
+  img_res = seamless_distort(img_res, list(map(int, left_eye.array_center())), left_eye.array_size())
+  img_res = seamless_distort(img_res, list(map(int, nose.array_center())), nose.array_size())
+  img_res = seamless_distort(img_res, list(map(int, mouse.array_center())), mouse.array_size())
 
   # 保存
   filenames = []
