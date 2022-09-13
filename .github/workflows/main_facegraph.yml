@@ -23,8 +23,9 @@ jobs:
           python-version: '3.9'
 
       - name: Install  libgl1-mesa-dev
-        run: apt-get update && apt-get upgrade -y
-        apt-get install -y libgl1-mesa-dev
+        run: | 
+          apt-get update && apt-get upgrade -y
+          apt-get install -y libgl1-mesa-dev
 
       - name: Create and start virtual environment
         run: |
