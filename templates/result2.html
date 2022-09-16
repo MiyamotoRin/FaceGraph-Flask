@@ -20,6 +20,10 @@
             <!-- サムネイル選択 -->
             <div class="resultAll">
                 <ul class="choice-btn">
+                    <li>
+                        <h3>元画像</h3>
+                        <img src="{{fn_img}}" alt="">
+                    </li>
                 {% for  i in csv_indexs %}
                     <li>
                         <h3>{{i}}</h3>
@@ -30,6 +34,10 @@
             </div>
             <!-- 画像を大画面表示 -->
             <ul class="gallery">
+                <li>
+                    <h3>元画像</h3>
+                    <img src="{{fn_img}}" alt="">
+                </li>
                 {% for i in csv_indexs %}
                 <li>
                     <b>{{i}}</b>

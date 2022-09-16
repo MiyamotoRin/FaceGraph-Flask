@@ -85,7 +85,7 @@ def uploads_file():
 
                 table = df.to_html(classes="mystyle")
                 
-                return render_template('result2.html', parent_path = RESHAPED_FOLDER, filenames = filenames, df=df,csv_columns = columns, csv_indexs = indexs, datas=datas , table=table)
+                return render_template('result2.html', parent_path = RESHAPED_FOLDER, filenames = filenames, fn_img=fn_img ,csv_columns = columns, csv_indexs = indexs, datas=datas , table=table)
     return render_template('index.html')
 
 
