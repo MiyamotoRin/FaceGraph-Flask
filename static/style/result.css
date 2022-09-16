@@ -1,0 +1,206 @@
+@charset "utf-8";
+
+/*==================================================
+スライダーのためのcss
+===================================*/
+
+
+body {
+  background-color: rgb(255, 255, 255);
+  font-family:Georgia, 'Times New Roman', Times, serif;
+}
+h1.title {
+  top: 20vh;
+  font-size: 500%;
+  text-transform: capitalize;
+  margin-bottom: 0px;
+  text-align: center;
+  color: #5f1854;
+}
+h2.subtitle{
+  text-align: center;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  color: #5f1854;
+}
+/*メイン画像下に余白をつける*/
+
+
+/*矢印の設定*/
+
+/*戻る、次へ矢印の位置*/
+.slick-prev, 
+.slick-next {
+    position: absolute;/*絶対配置にする*/
+  z-index: 3;
+    top: 42%;
+    cursor: pointer;/*マウスカーソルを指マークに*/
+    outline: none;/*クリックをしたら出てくる枠線を消す*/
+    border-top: 5px solid rgb(172, 169, 169);/*矢印の色*/
+    border-right: 5px solid rgb(172, 169, 169);/*矢印の色*/
+    height: 25px;
+    width: 25px;
+}
+
+.slick-prev {/*戻る矢印の位置と形状*/
+    left:2.5%;
+    transform: rotate(-135deg);
+}
+
+.slick-next {/*次へ矢印の位置と形状*/
+    right:2.5%;
+    transform: rotate(45deg);
+}
+
+
+  .wrapper{
+  width:100%;
+  /* max-width:1500px; */
+  /* margin:0 auto; */
+}  
+/*画像の横幅を100%にしてレスポンシブ化*/
+img{
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  vertical-align: bottom;
+}
+.flex {
+  display: inline-flex;
+  margin: 0 auto;
+}
+.gallery{
+  margin:0 0 5px 0;
+  width: 100vh !important; 
+  height: 100%;
+  object-fit: contain;
+  border: 1px solid;
+}
+
+/*選択するサムネイル画像の設定*/
+.resultAll {
+  width: 25%;
+  height: 100vh;
+  border: 1px solid;
+  /* overflow-x:scroll; */
+  overflow-y: scroll;
+  /* transform: rotateY(180deg); */
+}
+.flex-grow{
+  flex-grow: 1;
+}
+
+.choice-btn li{
+  cursor: pointer;
+  outline: none;
+  background:rgb(232, 218, 218);
+  width:auto!important;
+  height:auto;
+  margin:0 0 5px 0;
+  /* transform: rotateY(180deg); */
+}
+
+.choice-btn li img{
+  opacity: 0.4;/*選択されていないものは透過40%*/
+}
+
+.choice-btn li.slick-current img{
+  opacity: 1;/*選択されているものは透過しない*/
+}
+.choice-btn tr{
+  opacity: 0.4;/*選択されていないものは透過40%*/
+}
+
+.choice-btn .slick-current tr{
+  opacity: 1;/*選択されているものは透過しない*/
+}
+
+.choice-btn .slick-track {
+  transform: unset !important;/*画面幅サイズ変更に伴うサムネイル固定*/
+}
+
+/*========= レイアウトのためのCSS ===============*/
+
+/*エリア全体を中央寄せ*/
+
+ul{
+  margin:0;
+  padding: 0;
+  list-style: none;
+}
+
+a{
+  color: #333;
+}
+
+a:hover,
+a:active{
+  text-decoration: none;
+}
+
+h1{
+  text-align: center;
+  font-size:6vw;
+  font-family:Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  color: #5f1854;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin:30px 0;
+}
+
+p{
+  /* margin:30px 0; */
+  word-wrap : break-word;
+}
+
+/* csvデータ */
+mystyle {
+  border-spacing: 0px;
+  border-top: 0px solid;
+  border-left: 0px solid;
+  border-right: 0px solid;
+  border-bottom: 0px solid;
+}
+
+.mystyle th, td {
+  border-spacing: 0px;
+  padding: 5px;
+  border-top: 1px solid #924286;
+  border-bottom: 1px solid #924286;
+  border-right: 1px solid #924286;
+  margin: 0px;
+}
+
+.mystyle thead, th:first-child {
+  background-color: #924286;
+  text-shadow: -1px -1px 1px #666666;
+}
+
+.mystyle thead th{
+  color:white;
+  text-align: center;
+  border-bottom: 2px solid #924286;
+  letter-spacing: 0.15em;
+}
+.mystyle th:first-child {
+  color:white;
+  text-align: right;
+}
+
+.mystyle td {
+  font-family: Arial, Helvetica, sans-serif !important;
+  text-align: right;
+}
+
+.mystyle tr:nth-child(even) {
+  background: #e4a9db;
+}
+
+.mystyle thead tr th:first-child {
+  -webkit-border-top-left-radius: 5px;
+  -moz-border-radius-topleft: 5px;
+  border-top-left-radius: 5px;}
+
+.mystyle thead tr th:last-child {
+  -webkit-border-top-right-radius: 5px;
+  -moz-border-radius-topright: 5px;
+  border-top-right-radius: 5px;}    

@@ -4,7 +4,19 @@ body{
 .flex {
     display: flex;
   }
-
+h1.title {
+  top: 20vh;
+  font-size: 500%;
+  margin-bottom: 0px;
+  text-align: center;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  color: #5f1854;
+}
+h2.subtitle{
+  text-align: center;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  color: #5f1854;
+}
 .right {
 width: 50%;
 border: 1px solid;
@@ -60,6 +72,7 @@ border-collapse:collapse;
 margin:30px auto;
 }
 td,th{
+font-family: 'Times New Roman', Times, serif !important;
 padding:5px;
 text-align:center;
 }
@@ -72,5 +85,6 @@ background:#e4a9db;
 }
 .csv_data p{
   text-align: center;
-
 }
+
+

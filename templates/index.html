@@ -10,8 +10,12 @@
 
 <body>
   
-  <div class="title">FaceGraph</div>
-  <form action="/upload" method="post" enctype="multipart/form-data">
+  <a href="/" style="text-decoration:none;"><h1 class="title reveal-text">
+    Face Graph
+  </h1></a>
+  <h2 class="subtitle">~Upload~</h2>
+  
+  <form  action="/upload" method="post" enctype="multipart/form-data">
     <div class="flex">
       <div class="right">
         <p>画像を選択してください</p>
@@ -31,14 +35,17 @@
       </div>
     </div>
     <div class="sendData">
-      <input type="submit" value="加工する" name="sending">
+      <input type="submit" value="加工する" name="sending" id="sending">
       <input type="reset" value="リセット">
     </div>
+    </div>
+
   </form>
-  <div class="csv_data">
-    <table border="1">
-      <thead>
-      <tr style="text-align: right;">
+<div class="csv_data">
+  <table border="1" >
+    <caption>default.csv</caption>
+  <thead>
+    <tr style="text-align: right;">
       <th></th>
       <th>米</th>
       <th>大豆</th>
@@ -48,89 +55,89 @@
       <th>豚</th>
       <th>清酒</th>
       <th>鉄鋼</th>
-      </tr>
-      </thead>
-      <tbody>
+    </tr>
+  </thead>
+    <tbody>
       <tr>
-      <th>茨城</th>
-      <td>360000</td>
-      <td>3850</td>
-      <td>105800</td>
-      <td>99.0</td>
-      <td>1250.0</td>
-      <td>513400</td>
-      <td>3720.0</td>
-      <td>8333</td>
-      </tr>
-      <tr>
-      <th>埼玉</th>
-      <td>158200</td>
-      <td>578</td>
-      <td>18400</td>
-      <td>143.0</td>
-      <td>112.0</td>
-      <td>80600</td>
-      <td>25700.0</td>
-      <td>3801</td>
+        <th>茨城</th>
+        <td>360000</td>
+        <td>3850</td>
+        <td>105800</td>
+        <td>99</td>
+        <td>1250</td>
+        <td>513400</td>
+        <td>3720</td>
+        <td>8333</td>
       </tr>
       <tr>
-      <th>東京</th>
-      <td>496</td>
-      <td>7</td>
-      <td>6830</td>
-      <td>66.0</td>
-      <td>53.0</td>
-      <td>2950</td>
-      <td>NaN</td>
-      <td>1679</td>
+        <th>埼玉</th>
+        <td>158200</td>
+        <td>578</td>
+        <td>18400</td>
+        <td>143</td>
+        <td>112</td>
+        <td>80600</td>
+        <td>25700</td>
+        <td>3801</td>
       </tr>
       <tr>
-      <th>新潟</th>
-      <td>666800</td>
-      <td>5890</td>
-      <td>0</td>
-      <td>39.0</td>
-      <td>586.0</td>
-      <td>182100</td>
-      <td>46495.0</td>
-      <td>2244</td>
+        <th>東京</th>
+        <td>496</td>
+        <td>7</td>
+        <td>6830</td>
+        <td>66</td>
+        <td>53</td>
+        <td>2950</td>
+        <td>1500</td>
+        <td>1679</td>
       </tr>
       <tr>
-      <th>長野</th>
-      <td>192700</td>
-      <td>2800</td>
-      <td>61800</td>
-      <td>NaN</td>
-      <td>135400.0</td>
-      <td>61400</td>
-      <td>10394.0</td>
-      <td>560</td>
+        <th>新潟</th>
+        <td>666800</td>
+        <td>5890</td>
+        <td>3321</td>
+        <td>39</td>
+        <td>586</td>
+        <td>182100</td>
+        <td>46495</td>
+        <td>2244</td>
       </tr>
       <tr>
-      <th>大阪</th>
-      <td>22200</td>
-      <td>2650</td>
-      <td>10200</td>
-      <td>12800.0</td>
-      <td>0.0</td>
-      <td>3190</td>
-      <td>783.0</td>
-      <td>14626</td>
+        <th>長野</th>
+        <td>192700</td>
+        <td>2800</td>
+        <td>61800</td>
+        <td>100</td>
+        <td>135400</td>
+        <td>61400</td>
+        <td>10394</td>
+        <td>560</td>
       </tr>
       <tr>
-      <th>香川</th>
-      <td>58000</td>
-      <td>58</td>
-      <td>10100</td>
-      <td>11700.0</td>
-      <td>NaN</td>
-      <td>33000</td>
-      <td>1112.0</td>
-      <td>499</td>
+        <th>大阪</th>
+        <td>22200</td>
+        <td>2650</td>
+        <td>10200</td>
+        <td>12800</td>
+        <td>100</td>
+        <td>3190</td>
+        <td>783</td>
+        <td>14626</td>
       </tr>
-      </tbody>
-      </table>
-      </div>
+      <tr>
+        <th>香川</th>
+        <td>58000</td>
+        <td>58</td>
+        <td>10100</td>
+        <td>11700</td>
+        <td>80</td>
+        <td>33000</td>
+        <td>1112</td>
+        <td>499</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
     
     
 
