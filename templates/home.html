@@ -1,24 +1,80 @@
 <!DOCTYPE html>
 <html>
+<!--TKの環境下で行ったので、templates下のhome.cssをstyleに移し7行目のlink href適切なパスに置き換えてご利用ください-->
 
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="static\style\home.css">
+    <link href="https://coco-factory.jp/ugokuweb/wp-content/themes/ugokuweb/data/reset.css" rel="stylesheet">
     <title>Face Graph</title>
 </head>
 
 <body>
-    <div class="title">
-        Face Graph
+    <div id="splash">
+        <div id="splash_logo" class="title01">
+            <h1>
+                Face Graph
+            </h1>
+        </div>
     </div>
-    <div class="desc">
-        これはFaceGraphです。
+
+    <!--ローディング後以下を適用-->
+    <div id="main">
+        <div class="main-wrapper">
+            <div class="menu-anime">
+                <nav class="menu">
+                    <input type="checkbox" href="#" class="menu-open" name="menu-open" id="menu-open" />
+                    <label class="menu-open-button" for="menu-open">
+                        <span class="lines line-1"></span>
+                        <span class="lines line-2"></span>
+                        <span class="lines line-3"></span>
+                    </label>
+                    <!-- <a href="#" class="menu-item green"> <i class="fa fa-heart"></i> </a> -->
+                    <a href="#" class="menu-item red"> home </a>
+                    <a href="#next" class="menu-item purple"> desc</i> </a>
+                    <a href="https://twitter.com/ValorantEsports" class="menu-item orange"> twitter </a>
+                </nav>
+            </div>
+            <h1 class="title reveal-text">
+                Face Graph
+            </h1>
+            <div class="main1">
+                <div class="desc">
+                    ア<span>ッ</span>プロードされた顔画像を歪ませる<br />ことで、様々なデータを表情で<br>視ることができますよ。
+                    <br /><br />csvファイルは<br />なくても<br />動くよ<br />!
+                </div>
+                <div class="pic">
+                    <img src="static\style\abe_hiroshi.png" alt="" class="hiroshi">
+                </div>
+            </div>
+            <div class="next">
+                <a name="next">
+                    <form action="/upload" method="get">
+                        <button class="btn bgleft"><span>加工する</span></button>
+                    </form>
+                </a>
+            </div>
+        </div>
+        <div class="middle-wrapper">
+            <h2 class="title2">概要</h2>
+            <div class="desc2">
+
+                チャーノフの顔グラフというものがあります。これはデータ可視化方法の一種で、何らかのデータを顔それぞれの部位、すなわち右目、左目、鼻、口に適用して表現しその変化量を鑑みて
+                どこの値が突出しているかを見ることができるものです。詳しくは<a href="https://en.wikipedia.org/wiki/Chernoff_face">こちら</a>をご覧ください。
+            </div>
+        </div>
+        <div class="bottom-wrapper">
+            <div class="copylight">
+                ©2022 tsukubanban
+            </div>
+        </div>
     </div>
-    <div class="next">
-        <form action="/upload" method="get">
-            <input type="submit" value='加工する'>
-        </form>
-    </div>
+
+    <!--JQuery読み込み-->
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="static\scripts\home.js"></script>
 </body>
 
 </html>
