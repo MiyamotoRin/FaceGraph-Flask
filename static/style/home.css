@@ -15,7 +15,7 @@
 
 /* Loading画像中央配置　*/
 #splash_logo {
-  position: relative; 
+  position: relative;
   top: 45%;
   /* left: 34%;  */
   transform: translate(-50%, -50%);
@@ -43,11 +43,11 @@
 }
 /*追加分終わり*/
 /* メニューバーの追加 */
-.menu-anime{
+.menu-anime {
   position: fixed;
   max-width: 10%;
   height: 10%;
-  top:5%;
+  top: 5%;
   left: 2%;
 }
 
@@ -55,15 +55,16 @@ body {
   padding: 0;
   margin: 0;
   background: #596778;
-  color: #EEEEEE;
+  color: #eeeeee;
   text-align: center;
-  font-family: "Lato", sans-serif;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  text-decoration: none;
 }
 
 @media screen and (max-width: 700px) {
   body {
-     padding: 170px 0 0 0;
-     width: 100%
+    padding: 170px 0 0 0;
+    width: 100%;
   }
 }
 
@@ -73,13 +74,13 @@ a {
 
 .menu-item,
 .menu-open-button {
-  background: #EEEEEE;
+  background: #eeeeee;
   border-radius: 100%;
   width: 8vh;
   height: 8vh;
   margin-left: -3vh;
   position: absolute;
-  color: #FFFFFF;
+  color: #ffffff;
   text-align: center;
   line-height: 80px;
   -webkit-transform: translate3d(0, 0, 0);
@@ -151,17 +152,16 @@ a {
   height: 80px;
   text-align: center;
   box-sizing: border-box;
-  font-size: 26px;
+  font-size: 14px;
 }
-
 
 .menu-item {
   transition: all 0.1s ease 0s;
 }
 
 .menu-item:hover {
-  background: #EEEEEE;
-  color: #3290B1;
+  background: #eeeeee;
+  color: #3290b1;
 }
 
 .menu-item:nth-child(3) {
@@ -279,7 +279,7 @@ a {
   transform: translate3d(-0.25084px, -104.9997px, 0);
 } */
 
-.blue {
+/* .blue {
   background-color: #669AE1;
   box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.14);
   text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.12);
@@ -299,42 +299,42 @@ a {
 .green:hover {
   color: #70CC72;
   text-shadow: none;
-}
+} */
 
 .red {
-  background-color: #FE4365;
+  background-color: #5f1854;
   box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.14);
   text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.12);
 }
 
 .red:hover {
-  color: #FE4365;
+  color: #5f1854;
   text-shadow: none;
 }
 
 .purple {
-  background-color: #C49CDE;
+  background-color: #5f1854;
   box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.14);
   text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.12);
 }
 
 .purple:hover {
-  color: #C49CDE;
+  color: #5f1854;
   text-shadow: none;
 }
 
 .orange {
-  background-color: #FC913A;
+  background-color: #5f1854;
   box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.14);
   text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.12);
 }
 
 .orange:hover {
-  color: #FC913A;
+  color: #5f1854;
   text-shadow: none;
 }
 
-.lightblue {
+/* .lightblue {
   background-color: #62C2E4;
   box-shadow: 3px 3px 0 0 rgba(0, 0, 0, 0.14);
   text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.12);
@@ -343,17 +343,17 @@ a {
 .lightblue:hover {
   color: #62C2E4;
   text-shadow: none;
-}
+} */
 
 .credit {
   margin: 24px 20px 120px 0;
   text-align: right;
-  color: #EEEEEE;
+  color: #eeeeee;
 }
 
 .credit a {
   padding: 8px 0;
-  color: #C49CDE;
+  color: #c49cde;
   text-decoration: none;
   transition: all 0.3s ease 0s;
 }
@@ -364,16 +364,17 @@ a {
 /* 追加分終わり */
 
 .main-wrapper {
-  background-color: rgb(253, 253, 253);
-  height: 100vh; 
+  background-color: #fafafa;
+  height: 100vh;
   width: 100%;
 }
 
 h1.title {
+  top: 20vh;
   font-size: 500%;
   text-align: center;
   font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
-  color: rgb(230, 14, 122);
+  color: #5f1854;
 }
 
 .main1 {
@@ -381,40 +382,39 @@ h1.title {
 }
 
 .desc {
-  padding: 5% 25%;
+  color: #757575;
+  padding: 2% 25%;
   text-align: center;
 }
 .pic {
   text-align: center;
 }
 
-img {
-  max-width: 60%;
-  height:auto;
-}
-
-.next {
-  text-align: center;
-}
-
-.middle-wrapper{
-  padding:30%;
-  height: 100vh;
-}
-.title2{
-  text-align: center;
+.pic img {
+  width: auto;
+  height: 20%;
+  max-height: 400px;
 }
 
 /*ここから送信ボタン設定 */
+.next {
+  text-align: center;
+  position: relative;
+  height: 20%;
+}
+
 .btn {
   /*アニメーションの起点とするためrelativeを指定*/
   position: relative;
+  font-size: large;
   overflow: hidden;
   /*ボタンの形状*/
   text-decoration: none;
   display: inline-block;
-  border: 1px solid #555; /* ボーダーの色と太さ */
-  background: rgb(241, 237, 237); /*背景色*/
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  border: 0.5px solid #757575; /* ボーダーの色と太さ */
+  border-radius: 20%;
+  background: #3b0944; /*背景色*/
   padding: 10px 30px;
   text-align: center;
   outline: none;
@@ -426,11 +426,11 @@ img {
 .btn span {
   position: relative;
   z-index: 3; /*z-indexの数値をあげて文字を背景よりも手前に表示*/
-  color: #333;
+  color: #fff;
 }
 
 .btn:hover span {
-  color: #fff;
+  color: #3b0944;
 }
 
 /*== 背景が流れる（左から右） */
@@ -442,7 +442,7 @@ img {
   left: 0;
   z-index: 2;
   /*色や形状*/
-  background: #333; /*背景色*/
+  background: #fff; /*背景色*/
   width: 100%;
   height: 100%;
   /*アニメーション*/
@@ -455,6 +455,32 @@ img {
 .bgleft:hover:before {
   transform-origin: left top;
   transform: scale(1, 1);
+}
+/* botton終了 */
+
+.middle-wrapper {
+  padding: 15% 30%;
+  height: 100vh;
+  background-color: #646464;
+}
+.title2 {
+  text-align: center;
+}
+
+.desc2 {
+  color: #bdbdbd;
+  padding:2% 20%;
+}
+
+.pic2 {
+  padding:3% 20%; 
+  text-align: center;
+} 
+
+.pic2 img{
+  width:auto;
+  max-height: 20%;
+  height:200px;
 }
 
 .bottom-wrapper {

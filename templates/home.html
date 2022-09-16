@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <link rel="stylesheet" type="text/css" href="static\style\home.css">
+    <link rel="stylesheet" type="text/css" href="..\static\style\home.css">
     <link href="https://coco-factory.jp/ugokuweb/wp-content/themes/ugokuweb/data/reset.css" rel="stylesheet">
     <title>Face Graph</title>
 </head>
@@ -32,8 +32,8 @@
                     </label>
                     <!-- <a href="#" class="menu-item green"> <i class="fa fa-heart"></i> </a> -->
                     <a href="#" class="menu-item red"> home </a>
-                    <a href="#next" class="menu-item purple"> desc</i> </a>
-                    <a href="https://twitter.com/ValorantEsports" class="menu-item orange"> twitter </a>
+                    <a href="#desc2" class="menu-item purple"> description </a>
+                    <a href="https://github.com/MiyamotoRin/FaceGraph-Flask" class="menu-item orange"> PornHub </a>
                 </nav>
             </div>
             <h1 class="title reveal-text">
@@ -45,24 +45,34 @@
                     <br /><br />csvファイルは<br />なくても<br />動くよ<br />!
                 </div>
                 <div class="pic">
-                    <img src="static\assets\htmlPic\abe_hiroshi.png" alt="" class="hiroshi">
+                    <img src="..\static\assets\htmlPic\abe_hiroshi.png" alt="" class="hiroshi">
+                </div>
+                <div class="next">
+                    <a name="next">
+                        <form action="/upload" method="get">
+                            <button class="btn bgleft"><span>Let's Play</span></button>
+                        </form>
+                    </a>
                 </div>
             </div>
-            <div class="next">
-                <a name="next">
-                    <form action="/upload" method="get">
-                        <button class="btn bgleft"><span>加工する</span></button>
-                    </form>
-                </a>
-            </div>
+
         </div>
         <div class="middle-wrapper">
-            <h2 class="title2">概要</h2>
-            <div class="desc2">
+            <a name="desc2">
+                <h2 class="title2">概要</h2>
+                <div class="desc2">
 
-                チャーノフの顔グラフというものがあります。これはデータ可視化方法の一種で、何らかのデータを顔それぞれの部位、すなわち右目、左目、鼻、口に適用して表現しその変化量を鑑みて
-                どこの値が突出しているかを見ることができるものです。詳しくは<a href="https://en.wikipedia.org/wiki/Chernoff_face">こちら</a>をご覧ください。
-            </div>
+                     データの表現方法の一つとして、チャーノフの顔グラフというものがあります。これはデータ可視化方法の一種で、
+                    何らかの多次元データを顔それぞれの部位、すなわち右目、左目、鼻、口に適用して表現しその変化量を鑑みて
+                    どこの値が突出しているかを可視化できるものです。<br>
+                     例えば以下の画像だと、それぞれ五教科の点数を目、鼻、口、顎、頭に適応しておりその点数によって各部位が
+                    変化しています。
+                    詳しくは<a href="https://en.wikipedia.org/wiki/Chernoff_face">こちら</a>をご覧ください。
+                </div>
+                <div class="pic2">
+                    <img src="..\static\assets\htmlPic\Chernov'face.png" alt="" class="Chernov-face">
+                </div>
+            </a>
         </div>
         <div class="bottom-wrapper">
             <div class="copylight">
@@ -74,7 +84,7 @@
     <!--JQuery読み込み-->
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"
         integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-    <script src="static\scripts\home.js"></script>
+    <script src="..\static\scripts\home.js"></script>
 </body>
 
 </html>
