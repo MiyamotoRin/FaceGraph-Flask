@@ -5,7 +5,10 @@
 ===================================*/
 
 
-
+body {
+  background-color: rgb(255, 255, 255);
+  font-family:Georgia, 'Times New Roman', Times, serif;
+}
 
 /*メイン画像下に余白をつける*/
 
@@ -56,7 +59,7 @@ img{
 .gallery{
   margin:0 0 5px 0;
   width: 100vh !important; 
-  height: 100vh;
+  height: 100%;
   object-fit: contain;
   border: 1px solid;
 }
@@ -91,6 +94,13 @@ img{
 .choice-btn li.slick-current img{
   opacity: 1;/*選択されているものは透過しない*/
 }
+.choice-btn tr{
+  opacity: 0.4;/*選択されていないものは透過40%*/
+}
+
+.choice-btn .slick-current tr{
+  opacity: 1;/*選択されているものは透過しない*/
+}
 
 .choice-btn .slick-track {
   transform: unset !important;/*画面幅サイズ変更に伴うサムネイル固定*/
@@ -118,12 +128,67 @@ a:active{
 h1{
   text-align: center;
   font-size:6vw;
+  font-family:Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  color: #5f1854;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin:30px 0;
 }
 
 p{
-  margin:30px 0;
+  /* margin:30px 0; */
   word-wrap : break-word;
 }
+
+/* csvデータ */
+mystyle {
+  border-spacing: 0px;
+  border-top: 0px solid;
+  border-left: 0px solid;
+  border-right: 0px solid;
+  border-bottom: 0px solid;
+}
+
+.mystyle th, td {
+  border-spacing: 0px;
+  padding: 5px;
+  border-top: 1px solid #924286;
+  border-bottom: 1px solid #924286;
+  border-right: 1px solid #924286;
+  margin: 0px;
+}
+
+.mystyle thead, th:first-child {
+  background-color: #924286;
+  text-shadow: -1px -1px 1px #666666;
+}
+
+.mystyle thead th{
+  color:white;
+  text-align: center;
+  border-bottom: 2px solid #924286;
+  letter-spacing: 0.15em;
+}
+.mystyle th:first-child {
+  color:white;
+  text-align: right;
+}
+
+.mystyle td {
+  font-family: Arial, Helvetica, sans-serif !important;
+  text-align: right;
+}
+
+.mystyle tr:nth-child(even) {
+  background: #e4a9db;
+}
+
+.mystyle thead tr th:first-child {
+  -webkit-border-top-left-radius: 5px;
+  -moz-border-radius-topleft: 5px;
+  border-top-left-radius: 5px;}
+
+.mystyle thead tr th:last-child {
+  -webkit-border-top-right-radius: 5px;
+  -moz-border-radius-topright: 5px;
+  border-top-right-radius: 5px;}    

@@ -1,4 +1,5 @@
 #Flask
+import csv
 from flask import Flask, render_template, request, Blueprint, redirect, url_for, send_from_directory
 from datetime import datetime as dt 
 import json
@@ -44,12 +45,15 @@ def uploads_file():
         file_img = request.files['file_img']
         file_csv =request.files['file_csv']
         # ファイル名がなかった時の処理
+       
         if file_img.filename == '':
             print('画像ファイルがありません')
             return redirect(request.url)
+        # csvファイルがなかった場合default.csvを使用
         if file_csv.filename == '':
-            print('CSVファイルがありません')
-            return redirect(request.url)
+            print('CSVファイルがありませんyo')
+            file_csv.filename="default.csv"
+
         # ファイルのチェック(画像)
         if file_img and allwed_file(file_img.filename):
             # 危険な文字を削除（サニタイズ処理）
@@ -67,49 +71,28 @@ def uploads_file():
                 file_csv.save("./static/assets/uploads/" + filename_csv)
                 # アップロード後のページに転送
                 fn_csv = UPLOAD_FOLDER + filename_csv
-                #columns, indexsをフロント側で表示させる（配列）文字化けするかも
-                df, columns, indexs = deal_csv.deal_csv(fn_csv)
-                #不正なカラム，インデックスをエスケープ
+                
+                filenames = makefacegraph.face_reshape(fn_img , fn_csv)
+                #キーに都道府県、バリューに変形画像を持つ辞書datas
                 datas={}
-                filenames = makefacegraph.face_reshape(fn_img,fn_csv)
+            
+                #columns, indexsをフロント側で表示させる（配列）文字化けするかも
+                df, columns, indexs = deal_csv.deal_raw_csv(fn_csv)
+                #不正なカラム，インデックスをエスケープ
                 for i in range(len(columns)):
                     columns[i] =  html.escape(columns[i])
                     
                 for i in range(len(indexs)):
                     indexs[i] =  html.escape(indexs[i])
+                    #datasにindexs[i]をキー、画像をバリューとして格納
                     datas[f'{indexs[i]}']=filenames[i]
+
+                table = df.to_html(classes="mystyle")
                 
-                return render_template('result2.html', parent_path = RESHAPED_FOLDER, filenames = filenames, df=df,csv_columns = columns, csv_indexs = indexs, datas=datas)
+                return render_template('result2.html', parent_path = RESHAPED_FOLDER, filenames = filenames, fn_img=fn_img ,csv_columns = columns, csv_indexs = indexs, datas=datas , table=table)
     return render_template('index.html')
 
-# @app.route('/failed')
-# def failed():
-#     return '''
-#     <!DOCTYPE html>
-# <html>
 
-# <head>
-#     <meta charset="utf-8">
-#     <meta name="viewport" content="width=device-width,initial-scale=1.0">
-#     <title>失敗</title>
-# </head>
-
-# <body>
-#     <div class="title">
-#         Face Graph
-#     </div>
-#     <div class="desc">
-        
-#     </div>
-#     <div class="next">
-#         <form action="/upload" method="get">
-#             <input type="submit" value='加工する'>
-#         </form>
-#     </div>
-# </body>
-
-# </html>
-#     '''
 
 @app.route('/result')
 # ファイルを表示する
