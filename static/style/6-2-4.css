@@ -6,8 +6,8 @@
 
 
 body {
-  background-color: rgb(233, 210, 210);
-
+  background-color: rgb(255, 255, 255);
+  font-family:Georgia, 'Times New Roman', Times, serif;
 }
 
 /*メイン画像下に余白をつける*/
@@ -128,6 +128,8 @@ a:active{
 h1{
   text-align: center;
   font-size:6vw;
+  font-family:Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  color: #5f1854;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   margin:30px 0;
@@ -150,21 +152,21 @@ mystyle {
 .mystyle th, td {
   border-spacing: 0px;
   padding: 5px;
-  border-top: 1px solid #f1f8fe;
-  border-bottom: 1px solid #cbd2d8;
-  border-right: 1px solid #cbd2d8;
+  border-top: 1px solid #924286;
+  border-bottom: 1px solid #924286;
+  border-right: 1px solid #924286;
   margin: 0px;
 }
 
 .mystyle thead, th:first-child {
-  background-color: #90b4d6;
+  background-color: #924286;
   text-shadow: -1px -1px 1px #666666;
 }
 
 .mystyle thead th{
   color:white;
   text-align: center;
-  border-bottom: 2px solid #547ca0;
+  border-bottom: 2px solid #924286;
   letter-spacing: 0.15em;
 }
 .mystyle th:first-child {
@@ -173,11 +175,12 @@ mystyle {
 }
 
 .mystyle td {
+  font-family: Arial, Helvetica, sans-serif !important;
   text-align: right;
 }
 
 .mystyle tr:nth-child(even) {
-  background: #E0E0E0;
+  background: #e4a9db;
 }
 
 .mystyle thead tr th:first-child {

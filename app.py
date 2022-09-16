@@ -1,4 +1,5 @@
 #Flask
+import csv
 from flask import Flask, render_template, request, Blueprint, redirect, url_for, send_from_directory
 from datetime import datetime as dt 
 import json
@@ -44,12 +45,15 @@ def uploads_file():
         file_img = request.files['file_img']
         file_csv =request.files['file_csv']
         # ファイル名がなかった時の処理
+       
         if file_img.filename == '':
             print('画像ファイルがありません')
             return redirect(request.url)
+        # csvファイルがなかった場合default.csvを使用
         if file_csv.filename == '':
-            print('CSVファイルがありません')
-            return redirect(request.url)
+            print('CSVファイルがありませんyo')
+            file_csv.filename="default.csv"
+
         # ファイルのチェック(画像)
         if file_img and allwed_file(file_img.filename):
             # 危険な文字を削除（サニタイズ処理）
