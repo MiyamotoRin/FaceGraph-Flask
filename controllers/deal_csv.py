@@ -8,11 +8,20 @@ def mapping_df(df):
         df[c] = 40*(df[c] - df[c].min())/(df[c].max()-df[c].min())-20
             
     #columns, indexsの最大数の制限
+    #columns, indexsが不足していた時にゼロ埋めでcolumn, indexを増設
     # 10個まで
-    if(len(columns) > 10):
-        columns = columns[0:10]
-    if(len(indexs) > 10):
-        indexs = indexs[0:10]
+    if(len(indexs) > 11):
+        df = df.drop(index=df.index[10:])
+        indexs = list(df.index)
+    if(len(columns) > 8):
+        columns = columns[0:8]
+    elif(len(columns) < 8):
+        tmp_i = 0
+        while(len(list(df.columns)) < 8):
+            df['tmp'+str(tmp_i)] = [ 0 for i in range(len(indexs)) ]
+            print(tmp_i)
+            tmp_i+=1
+        columns = list(df.columns)
 
     return df, columns,indexs
 
@@ -40,5 +49,6 @@ def deal_csv(csv_path):
     except Exception as e:
         default_csv_path = "static/assets/default.csv"
         data = pd.read_csv(default_csv_path, encoding="shift jis", index_col=0)
-        text = "CSV ERROR: csvを正常に読み込めませんでした。"
+        print("CSV ERROR: csvを正常に読み込めませんでした。")
+        print(e)
         return mapping_df(data)

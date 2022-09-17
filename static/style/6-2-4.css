@@ -1,0 +1,105 @@
+@charset "utf-8";
+
+/*==================================================
+スライダーのためのcss
+===================================*/
+
+
+/*画像の横幅を100%にしてレスポンシブ化*/
+img{
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  vertical-align: bottom;/*画像の下にできる余白を削除*/
+}
+
+/*メイン画像下に余白をつける*/
+
+.gallery{
+  margin:0 0 5px 0;
+}
+
+/*矢印の設定*/
+
+/*戻る、次へ矢印の位置*/
+.slick-prev, 
+.slick-next {
+    position: absolute;/*絶対配置にする*/
+  z-index: 3;
+    top: 42%;
+    cursor: pointer;/*マウスカーソルを指マークに*/
+    outline: none;/*クリックをしたら出てくる枠線を消す*/
+    border-top: 5px solid rgb(172, 169, 169);/*矢印の色*/
+    border-right: 5px solid rgb(172, 169, 169);/*矢印の色*/
+    height: 25px;
+    width: 25px;
+}
+
+.slick-prev {/*戻る矢印の位置と形状*/
+    left:2.5%;
+    transform: rotate(-135deg);
+}
+
+.slick-next {/*次へ矢印の位置と形状*/
+    right:2.5%;
+    transform: rotate(45deg);
+}
+
+/*選択するサムネイル画像の設定*/
+
+.choice-btn li{
+  cursor: pointer;
+  outline: none;
+  background:grey;
+  width:25%!important;
+  height:50%;
+}
+
+.choice-btn li img{
+  opacity: 0.4;/*選択されていないものは透過40%*/
+}
+
+.choice-btn li.slick-current img{
+  opacity: 1;/*選択されているものは透過しない*/
+}
+
+.choice-btn .slick-track {
+  transform: unset !important;/*画面幅サイズ変更に伴うサムネイル固定*/
+}
+
+/*========= レイアウトのためのCSS ===============*/
+
+/*エリア全体を中央寄せ*/
+.wrapper{
+  width:94%;
+  max-width:900px;
+  margin:0 auto;
+}
+
+ul{
+  margin:0;
+  padding: 0;
+  list-style: none;
+}
+
+a{
+  color: #333;
+}
+
+a:hover,
+a:active{
+  text-decoration: none;
+}
+
+h1{
+  text-align: center;
+  font-size:6vw;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin:30px 0;
+}
+
+p{
+  margin:30px 0;
+  word-wrap : break-word;
+}

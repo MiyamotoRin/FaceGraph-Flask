@@ -1,18 +1,89 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
-    <title>face-graph</title>
-  </head>
-  <body>
-    {% for filename in filenames %}
-    <li>
-      <div>
-        <img src={{ parent_path + filename }} alt="">
-      </div>
-    </li>
-    {% endfor %}
 
-  </body>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <title>face-graph</title>
+</head>
+
+<body>
+  <style>
+    .result {
+      width: 75%;
+      height: 100vh;
+      border: 1px solid;
+    }
+
+    .resultAll {
+      width: 25%;
+      height: 100vh;
+      border: 1px solid;
+      overflow-x:scroll;
+      overflow-y: scroll;
+      transform: rotateY(180deg);
+    }
+
+    .imgs {
+      transform: rotateY(180deg);
+    }
+    img.choose {
+      width: 120px;
+    }
+    .results {
+      width: 100%;
+      background-image: cover;
+    }
+
+    .flex {
+      display: flex;
+    }
+    .box_2 {
+  width: 100px;
+  height: 100px;
+  background-color: skyblue;
+  transform-origin: top left;
+    }
+
+    .box_2:hover {
+      cursor: zoom-in;
+    }
+
+    .box_2.scale {
+      transform: scale(4, 4);
+    }
+
+    .box_2.scale:hover {
+      cursor: zoom-out;
+    }
+  </style>
+  <div class="title">Face Graph</div>
+  <div class="flex">
+    <div class="result">
+      ここで右側で選んだ画像を表示
+      defaultは一番最初の画像
+    </div>
+    <div class="resultAll">
+      <!-- resultAll直下に何かを書くと、文字が反転しますので、imgsクラスの中にお書きください-->
+      <div class="imgs">
+        ここはスクロールバー形式で加工画像を全て表示<br>
+        {% for filename in filenames %}
+        <li>
+          <div >
+            <img src={{parent_path+filename}} class="box_2" alt="">
+          </div>
+        </li>
+        {% endfor %} !
+      </div>
+    </div>
+  </div>
+  <script>
+    const box2 = document.querySelector('.box_2');
+
+    box2.addEventListener('click', () => {
+      box2.classList.toggle('scale');
+    });
+  </script>
+</body>
+
 </html>
