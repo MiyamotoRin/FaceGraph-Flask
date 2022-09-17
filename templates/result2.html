@@ -1,52 +1,73 @@
-HTML CSS JSResult Skip Results Iframe
-EDIT ON
 <!DOCTYPE html>
 <html lang="ja">
-<head>
-<meta charset="utf-8">
-<title>6-2-4 サムネイルをクリックすると、メイン画像が切り替わる1</title>
-<meta name="description"  content="書籍「動くWebデザインアイディア帳」のサンプルサイトです">
 
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
-<!--==============レイアウトを制御する独自のCSSを読み込み===============-->
-<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
-<link rel="stylesheet" type="text/css" href="static\style\6-2-4.css">
+<head>
+    <meta charset="utf-8">
+    <title>リザルト画面</title>
+    <meta name="description" content="リザルト画面です">
+
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <!--==============レイアウトを制御する独自のCSSを読み込み===============-->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css">
+    <link rel="stylesheet" type="text/css" href="static\style\result.css">
 </head>
 
 <body>
+    <div class="wrapper">
+        <a href="/" style="text-decoration:none;">
+            <h1 class="title">Face Graph</h1>
+         </a>
+         <h2 class="subtitle">~Gallery~</h2>
 
-<div class="wrapper">
-  <h1>Gallery</h1>
-  
-  <ul class="gallery">
-    {% for filename in filenames %}
-        <li>
-            <img src={{parent_path+filename}}  alt="">
-        </li>
-    {% endfor %}
-  </ul>
-  <!-- 下の選択肢 -->
-  <ul class="choice-btn">
-    {% for filename in filenames %}
-        <li>
-            <img src={{parent_path+filename}}  alt="">
-        </li>
-    {% endfor %}
-     </ul>
-<!-- /uploadに戻る -->
-<form action="/upload" method="get">
-    <input type="submit" value='再アップロード'>
-</form>
-<!--/wrapper--></div>
+        <div class="flex">
+            <!-- サムネイル選択 -->
+            <div class="resultAll">
+                <ul class="choice-btn">
+                    <li>
+                        <h3>元画像</h3>
+                        <img src="{{fn_img}}" alt="">
+                    </li>
+                {% for  i in csv_indexs %}
+                    <li>
+                        <h3>{{i}}</h3>
+                        <img src="{{parent_path+datas[i]}}" alt=""> 
+                    </li>
+                {% endfor %}
+                </ul>
+            </div>
+            <!-- 画像を大画面表示 -->
+            <ul class="gallery">
+                <li>
+                    <h3>元画像</h3>
+                    <img src="{{fn_img}}" alt="">
+                </li>
+                {% for i in csv_indexs %}
+                <li>
+                    <b>{{i}}</b>
+                    <img src={{parent_path+datas[i]}} alt="">
+                </li>
+                {% endfor %}
+            </ul>
+            <!-- 利用したデータを表示 -->
+            <div class="csv_data">
+                {{table | safe}}
+            </div>
+        </div>
+    </div>
+    <!-- /uploadに戻る -->
+    <form action="/" method="get">
+        <input type="submit" value='ホームに戻る'>
+    </form>
+    <form action="/upload" method="get">
+        <input type="submit" value='再アップロード'>
+    </form>
+    <!--/wrapper-->
+    
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"
+        integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+    <script src="static\scripts\result.js"></script>
+</body>
 
-{% for  c in csv_columns %}
-<p>{{c}}</p>
-{% endfor %}
-{% for  i in csv_indexs %}
-<p>{{i}}</p>
-{% endfor %}
 
-<script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
-<script src="static\scripts\6-2-4.js"></script></body>
 </html>

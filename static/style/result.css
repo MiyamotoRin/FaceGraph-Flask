@@ -9,7 +9,19 @@ body {
   background-color: rgb(255, 255, 255);
   font-family:Georgia, 'Times New Roman', Times, serif;
 }
-
+h1.title {
+  top: 20vh;
+  font-size: 500%;
+  text-transform: capitalize;
+  margin-bottom: 0px;
+  text-align: center;
+  color: #5f1854;
+}
+h2.subtitle{
+  text-align: center;
+  font-family: Cambria, Cochin, Georgia, Times, "Times New Roman", serif;
+  color: #5f1854;
+}
 /*メイン画像下に余白をつける*/
 
 

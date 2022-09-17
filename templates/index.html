@@ -4,70 +4,22 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1.0">
+  <link rel="stylesheet" type="text/css" href="static\style\index.css">
   <title>face-graph</title>
 </head>
 
 <body>
-  <style>
-    .flex {
-      display: flex;
-    }
-
-    .right {
-      width: 50%;
-      border: 1px solid;
-      /* position: relative;
-      border-radius: 8px;
-      height: 180px;
-      color: #fafafa;
-      background: #212121; */
-   
-      text-align: center;
-    }
-
-    /* .right:before {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: absolute;
-      top: 24px;
-      bottom: 24px;
-      left: 24px;
-      right: 24px;
-      border: dashed 2px #fafafa;
-      color: #fafafa;
-      font-size: 14px;
-      content: 'drag and drop "png" file here';
-      pointer-events: none;
-    }
-
-    .right input {
-      display: block;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100px;
-      height: 100px;
-      font-size: 10px;
-      opacity: 0;
-    } */
-
-    .left {
-      width: 50%;
-      border: 1px solid;
-    }
-
-    .sendData {
-      text-align: center;
-      bottom: 100px;
-
-    }
-  </style>
-  <div class="title">FaceGraph</div>
-  <form action="/upload" method="post" enctype="multipart/form-data">
+  
+  <a href="/" style="text-decoration:none;"><h1 class="title reveal-text">
+    Face Graph
+  </h1></a>
+  <h2 class="subtitle">~Upload~</h2>
+  
+  <form  action="/upload" method="post" enctype="multipart/form-data">
     <div class="flex">
       <div class="right">
-        <input type="file" name='file_img' accept='image/*' onchange="previewImage(this);">
+        <p>画像を選択してください</p>
+        <input type="file" name='file_img' accept='image/*' onchange="previewImage(this);" required>
         <p>
           Preview:<br>
           <img id="preview" src="data:image/gif;base64,R0lGODlhAQABAAAAACH5BAEKAAEALAAAAAABAAEAAAICTAEAOw=="
@@ -75,16 +27,119 @@
         </p>
       </div>
 
-      <div class="left">ここにCSVファイルボタン。アップロードで名前表示?
-        <input type="file" name="file_csv" accept='.csv'>
+      <div class="left">
+        <p>CSVファイルを指定してください</p>
+        <input type="file" name="file_csv" accept='.csv' >
+        <p>指定しなかった場合、デフォルトのCSVファイル(default.csv)が適用されます。</p>
+        <p>default.csvの内容は下に示します。</p>
       </div>
     </div>
     <div class="sendData">
-      <input type="submit" value="加工する" name="sending">
+      <input type="submit" value="加工する" name="sending" id="sending">
       <input type="reset" value="リセット">
+    </div>
     </div>
 
   </form>
+<div class="csv_data">
+  <table border="1" >
+    <caption>default.csv</caption>
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>米</th>
+      <th>大豆</th>
+      <th>キャベツ</th>
+      <th>みかん</th>
+      <th>りんご</th>
+      <th>豚</th>
+      <th>清酒</th>
+      <th>鉄鋼</th>
+    </tr>
+  </thead>
+    <tbody>
+      <tr>
+        <th>茨城</th>
+        <td>360000</td>
+        <td>3850</td>
+        <td>105800</td>
+        <td>99</td>
+        <td>1250</td>
+        <td>513400</td>
+        <td>3720</td>
+        <td>8333</td>
+      </tr>
+      <tr>
+        <th>埼玉</th>
+        <td>158200</td>
+        <td>578</td>
+        <td>18400</td>
+        <td>143</td>
+        <td>112</td>
+        <td>80600</td>
+        <td>25700</td>
+        <td>3801</td>
+      </tr>
+      <tr>
+        <th>東京</th>
+        <td>496</td>
+        <td>7</td>
+        <td>6830</td>
+        <td>66</td>
+        <td>53</td>
+        <td>2950</td>
+        <td>1500</td>
+        <td>1679</td>
+      </tr>
+      <tr>
+        <th>新潟</th>
+        <td>666800</td>
+        <td>5890</td>
+        <td>3321</td>
+        <td>39</td>
+        <td>586</td>
+        <td>182100</td>
+        <td>46495</td>
+        <td>2244</td>
+      </tr>
+      <tr>
+        <th>長野</th>
+        <td>192700</td>
+        <td>2800</td>
+        <td>61800</td>
+        <td>100</td>
+        <td>135400</td>
+        <td>61400</td>
+        <td>10394</td>
+        <td>560</td>
+      </tr>
+      <tr>
+        <th>大阪</th>
+        <td>22200</td>
+        <td>2650</td>
+        <td>10200</td>
+        <td>12800</td>
+        <td>100</td>
+        <td>3190</td>
+        <td>783</td>
+        <td>14626</td>
+      </tr>
+      <tr>
+        <th>香川</th>
+        <td>58000</td>
+        <td>58</td>
+        <td>10100</td>
+        <td>11700</td>
+        <td>80</td>
+        <td>33000</td>
+        <td>1112</td>
+        <td>499</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+    
+    
 
   <script>
   
