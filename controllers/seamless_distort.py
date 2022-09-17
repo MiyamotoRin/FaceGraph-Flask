@@ -4,6 +4,7 @@ import cv2
 import math
 import mediapipe as mp
 from PIL import Image
+from datetime import datetime as dt 
 # csvを読み込む
 import controllers.deal_csv as deal_csv
 import controllers.makefacegraph as mfg
@@ -32,47 +33,83 @@ def fish_eye_lens(img_RGB, w, h, center, ROI_size, a, b ):
   # 水滴を落としたあとの画像として、元画像のコピーを作成。後処理で
   img_res = img_RGB.copy()
   ROI_h, ROI_w = ROI_size[0], ROI_size[1]
-  # a: 長径, b: 短径にする
-  if a < b:
-    a, b = b, a
-  e = abs(a**2 - b**2)**(0.5) / a # 離心率
-  print('e: ', e)
+  print('a: ', a, 'b: ', b)
   min_x, min_y = max(center[1]-ROI_w, 0), max(center[0]-ROI_h, 0)
   max_x, max_y = min(center[1]+ROI_w, w), min(center[0]+ROI_h, h)
   for x in range(min_x, max_x):
     for y in range(min_y, max_y):
-  # for x in range(w):
-    # for y in range(h):
-      # dはこれから処理を行うピクセルの、水滴の中心からの距離
-      d = np.linalg.norm(center - np.array((y,x)))
       # 水滴の中心を原点とした時の相対的な座標系におけるx,y座標
       xrel, yrel = x - center[1], y - center[0]
-      # 極座標系におけるthetaの算出
-      theta = math.pi/2.0
-      if xrel != 0:
-        theta = math.atan(yrel/xrel)
-      # 二次曲線の極座標表現
-      R = ROI_w / (1 + e * math.cos(theta))
+      d = math.sqrt(xrel**2+yrel**2)
+      R = 0
       #dが水滴の半径より小さければ座標を変換する処理をする
-      if d < R:
-        # vectorは変換ベクトル。説明はコード外で。
-        vector = (d / R)**(1.4) * (np.array((y,x)) - center)
+      if (xrel**2)/(a**2) + (yrel**2)/(b**2) <= 1.0:
+        # vectorは変換ベクトル
+        vector = 0
+        if xrel==0 and yrel==0:
+          continue
+        if xrel==0:
+          vector = (np.array((y,x)) - center)
+        elif yrel==0:
+          vector = (np.array((y,x)) - center)
+        else:
+          k = yrel/xrel
+          xx = (a*b)**2 / ((a*k)**2+b**2)
+          xe, ye = 0, 0
+          if xrel>0 and yrel>0:
+            xe = math.sqrt(xx)
+            ye = k*xe
+          elif xrel<0 and yrel>0:
+            xe = -math.sqrt(xx)
+            ye = k*xe
+          elif xrel<0 and yrel<0:
+            xe = -math.sqrt(xx)
+            ye = -k*xe
+          elif xrel>0 and yrel<0:
+            xe = math.sqrt(xx)
+            ye = -k*xe
+          R = math.sqrt(xe**2 + ye**2)
+          vector = (d / R)**1.4 * (np.array((y,x)) - center)
         # 変換後の座標を整数に変換
         p = (center + vector).astype(np.int32)
-        # print('[xrel, yrel]:', [xrel, yrel], ', theta:', theta, ', R:', R, ', p:', p)
         # 色のデータの置き換え
         img_res[y,x,:]=img_RGB[p[0],p[1],:]
         # img_res[y,x,:]=[0,100,0]
+
+  # for x in range(min_x, max_x):
+  #   for y in range(min_y, max_y):
+  #     # dはこれから処理を行うピクセルの、水滴の中心からの距離
+  #     d = np.linalg.norm(center - np.array((y,x)))
+  #     # 水滴の中心を原点とした時の相対的な座標系におけるx,y座標
+  #     xrel, yrel = x - center[1], y - center[0]
+  #     # 極座標系におけるthetaの算出
+  #     theta = math.pi/2.0
+  #     if xrel != 0:
+  #       theta = math.atan(yrel/xrel)
+  #     # 二次曲線の極座標表現
+  #     R = ROI_w / (1 + e * math.cos(theta))
+  #     #dが水滴の半径より小さければ座標を変換する処理をする
+  #     if d < R:
+  #       # vectorは変換ベクトル。説明はコード外で。
+  #       vector = (d / R)**(1.4) * (np.array((y,x)) - center)
+  #       # 変換後の座標を整数に変換
+  #       p = (center + vector).astype(np.int32)
+  #       # print('[xrel, yrel]:', [xrel, yrel], ', theta:', theta, ', R:', R, ', p:', p)
+  #       # 色のデータの置き換え
+  #       img_res[y,x,:]=img_RGB[p[0],p[1],:]
+  #       # img_res[y,x,:]=[0,100,0]
   return img_res
 
 # シームレスに歪める
 # img_RGB: RGB画像, pos: 歪みの中心座標, r: 歪みの半径
-def seamless_distort(img_RGB, pos, r):
+def seamless_distort(img_RGB, pos, r, a, b=-40):
   (h, w, c) = img_RGB.shape
   #水滴の中心と半径の指定
   center = np.array((pos[1],pos[0]))
+  if b==-40:
+    b = r[0]
   # ピクセルの座標を変換
-  img_res = fish_eye_lens(img_RGB, w, h, center, r, 10, 20)
+  img_res = fish_eye_lens(img_RGB, w, h, center, r, 2*r[1]*(a+20)/40+r[1]/4, 2*r[1]*(b+20)/40+r[0]/4)
   return img_res
 
 
@@ -122,34 +159,39 @@ def face_reshape(img_path, csv_path):
   #indexsの数だけ画像を生成
   #最終的に出力される画像の配列
   img_arr=[]
-  rev_shape=[]
-  # for index in indexs:
-  #   #歪み適応後の画像配列
-  #   dst_imgs=[]
-  #   #indexに関したcolumns（属性）の数だけ，dataの値に応じてパーツを歪ませる
-  #   len_half = int(len(columns)/2)
-  #   for i in  range(len_half):
-  #     dst=[]
-  #     dst = distorter(parts_img[i], 
-  #                     x_volume=data[columns[2*i]][index],
-  #                     y_volume=data[columns[2*i+1]][index]
-  #                     )
-  #     #columnsの数が2で割り切れないときはx軸方向のみ歪ませる
-  #     if(i == len_half-1 and len_half*2 < len(columns) ):
-  #         dst = distorter(parts_img[i+1], 
-  #                         x_volume=data[columns[2*i]][index],
-  #                         y_volume=0.0
-  #                         )
+  print(data, columns, indexs)
+  col_len = len(columns)
+  for index in indexs:
+    img_res = img_RGB
+    if col_len==0:
+      return
+    if col_len>=1:
+      if col_len==1:
+        img_res = seamless_distort(img_res, list(map(int, right_eye.array_center())), right_eye.array_size(), data[columns[0]][index])
+      else:
+        img_res = seamless_distort(img_res, list(map(int, right_eye.array_center())), right_eye.array_size(), data[columns[0]][index], data[columns[1]][index])
+    if col_len>=3:
+      if col_len==3:
+        img_res = seamless_distort(img_res, list(map(int, left_eye.array_center())), left_eye.array_size(), data[columns[2]][index])
+      else:
+        img_res = seamless_distort(img_res, list(map(int, left_eye.array_center())), left_eye.array_size(), data[columns[2]][index], data[columns[3]][index])
+    if col_len>=5:
+      if col_len==5:
+        img_res = seamless_distort(img_res, list(map(int, nose.array_center())), nose.array_size(), data[columns[4]][index])
+      else:
+        img_res = seamless_distort(img_res, list(map(int, nose.array_center())), nose.array_size(), data[columns[4]][index], data[columns[5]][index])
+    if col_len>=7:
+      if col_len==7:
+        img_res = seamless_distort(img_res, list(map(int, mouse.array_center())), mouse.array_size(), data[columns[6]][index])
+      else:
+        img_res = seamless_distort(img_res, list(map(int, mouse.array_center())), mouse.array_size(), data[columns[6]][index], data[columns[7]][index])
+    img_arr.append(img_res)
 
-  # 画像変形
-  img_res = seamless_distort(img_RGB, list(map(int, right_eye.array_center())), right_eye.array_size())
-  img_res = seamless_distort(img_res, list(map(int, left_eye.array_center())), left_eye.array_size())
-  img_res = seamless_distort(img_res, list(map(int, nose.array_center())), nose.array_size())
-  img_res = seamless_distort(img_res, list(map(int, mouse.array_center())), mouse.array_size())
-
-  # 保存
+  #保存
+  #img_arr
   filenames = []
-  f_name = "reshape.jpg"
-  filenames.append(f_name)
-  cv2.imwrite("static/assets/reshaped/" + f_name,img_res)
+  for i in range(len(indexs)):
+    f_name = "reshape("+str(i)+")"+ str(dt.timestamp(dt.now())) +".jpg"
+    filenames.append(f_name)
+    cv2.imwrite("static/assets/reshaped/" + f_name,img_arr[i])
   return filenames
