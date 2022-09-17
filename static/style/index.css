@@ -87,4 +87,6 @@ background:#e4a9db;
   text-align: center;
 }
 
-
+.flex .mode-select {
+  margin: 20px auto;
+}
