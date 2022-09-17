@@ -79,7 +79,7 @@ def uploads_file():
                     columns[i] =  html.escape(columns[i])
                 for i in range(len(indexs)):
                     indexs[i] =  html.escape(indexs[i])
-                filenames = seamless.seamless_distort.face_reshape(fn_img,fn_csv)
+                filenames = seamless.face_reshape(fn_img,fn_csv)
                 #顔認識できなかった場合
                 if filenames == []:
                     return render_template('error.html', err_mes = "顔認識できませんでした")
