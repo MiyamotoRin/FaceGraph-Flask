@@ -8,6 +8,7 @@ import os
 from werkzeug.utils import secure_filename
 import numpy as np
 import controllers.makefacegraph as makefacegraph
+import controllers.seamless_distort as seamless
 import controllers.deal_csv as deal_csv
 import html
 app = Flask(__name__,  static_folder="static")  
@@ -35,15 +36,20 @@ def uploads_file():
     if request.method == 'POST':
         # ファイルがなかった場合の処理
         print(request.files)
+        print(request.form)
         if 'file_img' not in request.files:
             print('画像ファイルがありません')
             return redirect(request.url)
         if 'file_csv' not in request.files:
             print('CSVファイルがありません')
             return redirect(request.url)
+        if 'mode' not in request.form:
+            print('モードが選択されていません')
+            return redirect(request.url)
         # データの取り出し
         file_img = request.files['file_img']
         file_csv =request.files['file_csv']
+        use_mode = request.form['mode']
         # ファイル名がなかった時の処理
        
         if file_img.filename == '':
@@ -71,8 +77,20 @@ def uploads_file():
                 file_csv.save("./static/assets/uploads/" + filename_csv)
                 # アップロード後のページに転送
                 fn_csv = UPLOAD_FOLDER + filename_csv
-                
-                filenames = makefacegraph.face_reshape(fn_img , fn_csv)
+                #columns, indexsをフロント側で表示させる（配列）文字化けするかも
+                df, columns, indexs = deal_csv.deal_csv(fn_csv)
+                #不正なカラム，インデックスをエスケープ
+                for i in range(len(columns)):
+                    columns[i] =  html.escape(columns[i])
+                for i in range(len(indexs)):
+                    indexs[i] =  html.escape(indexs[i])
+                if use_mode == '0':
+                    filenames = makefacegraph.face_reshape(fn_img,fn_csv)
+                elif use_mode == '1':
+                    filenames = seamless.face_reshape(fn_img,fn_csv)
+                else:
+                    print('予期せぬエラー')
+                    return redirect(request.url)                
                 #顔認識できなかった場合
                 if filenames == []:
                     return render_template('error.html', err_mes = "顔認識できませんでした")
