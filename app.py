@@ -36,15 +36,20 @@ def uploads_file():
     if request.method == 'POST':
         # ファイルがなかった場合の処理
         print(request.files)
+        print(request.form)
         if 'file_img' not in request.files:
             print('画像ファイルがありません')
             return redirect(request.url)
         if 'file_csv' not in request.files:
             print('CSVファイルがありません')
             return redirect(request.url)
+        if 'mode' not in request.form:
+            print('モードが選択されていません')
+            return redirect(request.url)
         # データの取り出し
         file_img = request.files['file_img']
         file_csv =request.files['file_csv']
+        use_mode = request.form['mode']
         # ファイル名がなかった時の処理
        
         if file_img.filename == '':
@@ -79,7 +84,13 @@ def uploads_file():
                     columns[i] =  html.escape(columns[i])
                 for i in range(len(indexs)):
                     indexs[i] =  html.escape(indexs[i])
-                filenames = seamless.face_reshape(fn_img,fn_csv)
+                if use_mode == '0':
+                    filenames = makefacegraph.face_reshape(fn_img,fn_csv)
+                elif use_mode == '1':
+                    filenames = seamless.face_reshape(fn_img,fn_csv)
+                else:
+                    print('予期せぬエラー')
+                    return redirect(request.url)                
                 #顔認識できなかった場合
                 if filenames == []:
                     return render_template('error.html', err_mes = "顔認識できませんでした")
