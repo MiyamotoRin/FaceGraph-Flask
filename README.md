@@ -18,3 +18,7 @@ pipenv install
 # start
 pipenv run flask run
 ```
+
+## Other
+技育展2022にて発表しました \
+[YouTubeで発表動画を見ることができます](https://youtu.be/KM7tr657_3U)
